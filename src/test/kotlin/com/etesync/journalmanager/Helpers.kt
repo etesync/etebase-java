@@ -1,4 +1,4 @@
-package com.etesync.syncadapter.journalmanager
+package com.etesync.journalmanager
 
 internal object Helpers {
     val USER = "test@localhost"

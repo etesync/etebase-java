@@ -1,10 +1,10 @@
-package com.etesync.syncadapter.journalmanager
+package com.etesync.journalmanager
 
-import com.etesync.syncadapter.GsonHelper
-import com.etesync.syncadapter.journalmanager.Crypto.CryptoManager.Companion.HMAC_SIZE
-import com.etesync.syncadapter.journalmanager.Crypto.sha256
-import com.etesync.syncadapter.journalmanager.Crypto.toHex
-import com.etesync.syncadapter.log.Logger
+import com.etesync.journalmanager.GsonHelper
+import com.etesync.journalmanager.Crypto.CryptoManager.Companion.HMAC_SIZE
+import com.etesync.journalmanager.Crypto.sha256
+import com.etesync.journalmanager.Crypto.toHex
+import com.etesync.journalmanager.Logger
 import com.google.gson.reflect.TypeToken
 import okhttp3.HttpUrl
 import okhttp3.OkHttpClient

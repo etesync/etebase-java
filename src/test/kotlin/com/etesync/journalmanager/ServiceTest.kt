@@ -1,16 +1,7 @@
-/*
- * Copyright © 2013 – 2015 Ricki Hirner (bitfire web engineering).
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the GNU Public License v3.0
- * which accompanies this distribution, and is available at
- * http://www.gnu.org/licenses/gpl.html
- */
+package com.etesync.journalmanager
 
-package com.etesync.syncadapter.journalmanager
-
-import com.etesync.syncadapter.App
-import com.etesync.syncadapter.HttpClient
-import com.etesync.syncadapter.model.CollectionInfo
+import com.etesync.journalmanager.HttpClient
+import com.etesync.journalmanager.model.CollectionInfo
 import okhttp3.*
 import okio.BufferedSink
 import org.junit.After
@@ -28,12 +19,12 @@ class ServiceTest {
     @Before
     @Throws(Exception::class)
     fun setUp() {
-        httpClient = HttpClient.Builder().build().okHttpClient
+        httpClient = HttpClient.okHttpClient
         remote = HttpUrl.parse("http://localhost:8000") // FIXME: hardcode for now, should make configureable
         val journalAuthenticator = JournalAuthenticator(httpClient!!, remote!!)
         authToken = journalAuthenticator.getAuthToken(Helpers.USER, Helpers.PASSWORD)
 
-        httpClient = HttpClient.Builder(null, null, authToken!!).build().okHttpClient
+        httpClient = HttpClient.withAuthentication(null, authToken!!)
 
         /* Reset */
         val request = Request.Builder()
@@ -58,6 +49,8 @@ class ServiceTest {
     @After
     @Throws(IOException::class)
     fun tearDown() {
+        val journalAuthenticator = JournalAuthenticator(httpClient!!, remote!!)
+        journalAuthenticator.invalidateAuthToken(authToken!!)
     }
 
     @Test

@@ -1,6 +1,6 @@
-package com.etesync.syncadapter.journalmanager
+package com.etesync.journalmanager
 
-import at.bitfire.cert4android.Constants
+import com.etesync.journalmanager.Logger
 import okhttp3.Response
 import okio.Buffer
 import java.io.IOException
@@ -99,7 +99,7 @@ class Exceptions {
                     while (!buffer.exhausted())
                         appendByte(formatted, buffer.readByte())
                 } catch (e: IOException) {
-                    Constants.log.warning("Couldn't read request body")
+                    Logger.log.warning("Couldn't read request body")
                 }
 
             this.request = formatted.toString()
@@ -118,7 +118,7 @@ class Exceptions {
                     for (b in body!!.bytes())
                         appendByte(formatted, b)
                 } catch (e: IOException) {
-                    Constants.log.warning("Couldn't read response body")
+                    Logger.log.warning("Couldn't read response body")
                 }
 
                 body!!.close()

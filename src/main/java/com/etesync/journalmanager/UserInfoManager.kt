@@ -1,8 +1,8 @@
-package com.etesync.syncadapter.journalmanager
+package com.etesync.journalmanager
 
-import com.etesync.syncadapter.GsonHelper
-import com.etesync.syncadapter.journalmanager.Crypto.CryptoManager.Companion.HMAC_SIZE
-import com.etesync.syncadapter.journalmanager.Crypto.toHex
+import com.etesync.journalmanager.GsonHelper
+import com.etesync.journalmanager.Crypto.CryptoManager.Companion.HMAC_SIZE
+import com.etesync.journalmanager.Crypto.toHex
 import okhttp3.*
 import org.spongycastle.util.Arrays
 import java.io.IOException

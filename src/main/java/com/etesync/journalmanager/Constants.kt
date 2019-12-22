@@ -1,4 +1,4 @@
-package com.etesync.syncadapter.journalmanager
+package com.etesync.journalmanager
 
 class Constants {
     companion object {

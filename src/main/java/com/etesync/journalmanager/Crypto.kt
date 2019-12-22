@@ -1,8 +1,8 @@
-package com.etesync.syncadapter.journalmanager
+package com.etesync.journalmanager
 
-import com.etesync.syncadapter.journalmanager.util.ByteUtil
-import com.etesync.syncadapter.log.Logger
-import com.etesync.syncadapter.utils.Base64
+import com.etesync.journalmanager.util.ByteUtil
+import com.etesync.journalmanager.util.Base64
+import com.etesync.journalmanager.Logger
 import org.apache.commons.lang3.ArrayUtils
 import org.spongycastle.crypto.AsymmetricBlockCipher
 import org.spongycastle.crypto.BufferedBlockCipher

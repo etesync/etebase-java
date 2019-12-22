@@ -1,7 +1,7 @@
-package com.etesync.syncadapter.journalmanager
+package com.etesync.journalmanager
 
-import com.etesync.syncadapter.GsonHelper
-import com.etesync.syncadapter.log.Logger
+import com.etesync.journalmanager.GsonHelper
+import com.etesync.journalmanager.Logger
 import com.google.gson.reflect.TypeToken
 import okhttp3.HttpUrl
 import okhttp3.OkHttpClient

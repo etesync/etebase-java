@@ -3,7 +3,7 @@
  *
  * Licensed according to the LICENSE file in this repository.
  */
-package com.etesync.syncadapter.journalmanager.util;
+package com.etesync.journalmanager.util;
 
 import org.apache.commons.codec.binary.Hex;
 

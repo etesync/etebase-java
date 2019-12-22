@@ -1,6 +1,6 @@
-package com.etesync.syncadapter.journalmanager
+package com.etesync.journalmanager
 
-import com.etesync.syncadapter.GsonHelper
+import com.etesync.journalmanager.GsonHelper
 import okhttp3.*
 import java.io.IOException
 import java.net.HttpURLConnection
