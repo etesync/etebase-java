@@ -64,6 +64,29 @@ publishing {
             from(components["java"])
             artifact(sourcesJar)
             artifact(dokkaJar)
+            pom {
+                name.set("EteSync JVM")
+                description.set("EteSync API client for the JVM")
+                url.set("https://www.etesync.com")
+                licenses {
+                    license {
+                        name.set("LGPL-3.0-only")
+                        url.set("https://spdx.org/licenses/LGPL-3.0-only.html")
+                    }
+                }
+                developers {
+                    developer {
+                        id.set("tasn")
+                        name.set("Tom Hacohen")
+                        email.set("maven@stosb.com")
+                    }
+                }
+                scm {
+                    connection.set("scm:git:git://github.com/etesync/etesync-jvm.git")
+                    developerConnection.set("scm:git:ssh://github.com/etesync/etesync-jvm")
+                    url.set("https://github.com/etesync/etesync-jvm")
+                }
+            }
         }
     }
     repositories {
