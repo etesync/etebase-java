@@ -47,50 +47,53 @@ artifacts {
     archives javadocJar, sourcesJar
 }
 
-signing {
-    useGpgCmd()
-    sign configurations.archives
-}
-
-uploadArchives {
-  repositories {
-    mavenDeployer {
-      beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-
-      repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
-        authentication(userName: ossrhUsername, password: ossrhPassword)
-      }
-
-      snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
-        authentication(userName: ossrhUsername, password: ossrhPassword)
-      }
-      pom.project {
-          name "EteSync JVM"
-          packaging "jar"
-          description "EteSync API client for the JVM"
-          url "https://www.etesync.com"
-
-          scm {
-              connection "scm:git:git://github.com/etesync/etesync-jvm.git"
-              developerConnection "scm:git:ssh://github.com/etesync/etesync-jvm"
-              url "https://github.com/etesync/etesync-jvm"
-          }
-
-          licenses {
-              license {
-                  name "LGPL-3.0-only"
-                  url "https://spdx.org/licenses/LGPL-3.0-only.html"
-              }
-          }
-
-          developers {
-              developer {
-                  id "tasn"
-                  name "Tom Hacohen"
-                  email "maven@stosb.com"
-              }
-          }
-      }
+if (project.hasProperty("ossrhUsername")) {
+    signing {
+        useGpgCmd()
+            sign configurations.archives
     }
-  }
+
+    uploadArchives {
+        repositories {
+            mavenDeployer {
+                beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+                repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                    authentication(userName: ossrhUsername, password: ossrhPassword)
+                }
+
+                snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+                    authentication(userName: ossrhUsername, password: ossrhPassword)
+                }
+
+                pom.project {
+                    name "EteSync JVM"
+                        packaging "jar"
+                        description "EteSync API client for the JVM"
+                        url "https://www.etesync.com"
+
+                        scm {
+                            connection "scm:git:git://github.com/etesync/etesync-jvm.git"
+                            developerConnection "scm:git:ssh://github.com/etesync/etesync-jvm"
+                            url "https://github.com/etesync/etesync-jvm"
+                        }
+
+                    licenses {
+                        license {
+                        name "LGPL-3.0-only"
+                        url "https://spdx.org/licenses/LGPL-3.0-only.html"
+                        }
+                    }
+
+                    developers {
+                        developer {
+                            id "tasn"
+                            name "Tom Hacohen"
+                            email "maven@stosb.com"
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
