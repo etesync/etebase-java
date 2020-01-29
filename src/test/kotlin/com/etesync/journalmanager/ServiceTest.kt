@@ -53,12 +53,27 @@ class ServiceTest {
         journalAuthenticator.invalidateAuthToken(authToken!!)
     }
 
+    enum class Type {
+        ADDRESS_BOOK,
+        CALENDAR,
+        TASKS,
+    }
+
+    fun defaultForServiceType(service: Type): CollectionInfo {
+        val info = CollectionInfo()
+        info.displayName = "Default"
+        info.selected = true
+        info.type = service.name
+
+        return info
+    }
+
     @Test
     @Throws(IOException::class, Exceptions.HttpException::class, Exceptions.GenericCryptoException::class, Exceptions.IntegrityException::class)
     fun testSyncSimple() {
         var caught: Exception?
         val journalManager = JournalManager(httpClient!!, remote!!)
-        val info = CollectionInfo.defaultForServiceType(CollectionInfo.Type.ADDRESS_BOOK)
+        val info = defaultForServiceType(Type.ADDRESS_BOOK)
         info.uid = JournalManager.Journal.genUid()
         info.displayName = "Test"
         val crypto = Crypto.CryptoManager(info.version, Helpers.keyBase64, info.uid!!)
@@ -123,7 +138,7 @@ class ServiceTest {
     fun testSyncEntry() {
         var caught: Exception?
         val journalManager = JournalManager(httpClient!!, remote!!)
-        val info = CollectionInfo.defaultForServiceType(CollectionInfo.Type.ADDRESS_BOOK)
+        val info = defaultForServiceType(Type.ADDRESS_BOOK)
         info.uid = JournalManager.Journal.genUid()
         info.displayName = "Test"
         val crypto = Crypto.CryptoManager(info.version, Helpers.keyBase64, info.uid!!)
@@ -229,7 +244,7 @@ class ServiceTest {
     @Throws(IOException::class, Exceptions.HttpException::class, Exceptions.GenericCryptoException::class, Exceptions.IntegrityException::class)
     fun testJournalMember() {
         val journalManager = JournalManager(httpClient!!, remote!!)
-        val info = CollectionInfo.defaultForServiceType(CollectionInfo.Type.ADDRESS_BOOK)
+        val info = defaultForServiceType(Type.ADDRESS_BOOK)
         info.uid = JournalManager.Journal.genUid()
         info.displayName = "Test"
         val crypto = Crypto.CryptoManager(info.version, Helpers.keyBase64, info.uid!!)
