@@ -8,6 +8,7 @@ apply plugin: 'signing'
 
 group = "com.etesync"
 version = "1.0.2"
+ext.isReleaseVersion = !version.endsWith("SNAPSHOT")
 
 repositories {
     jcenter()
@@ -47,15 +48,20 @@ artifacts {
     archives javadocJar, sourcesJar
 }
 
-signing {
-    useGpgCmd()
-    sign configurations.archives
+ext.shouldSign = isReleaseVersion
+if (shouldSign) {
+    signing {
+        useGpgCmd()
+        sign configurations.archives
+    }
 }
 
 uploadArchives {
   repositories {
     mavenDeployer {
-      beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+      if (shouldSign) {
+          beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+      }
 
       repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
         authentication(userName: ossrhUsername, password: ossrhPassword)
