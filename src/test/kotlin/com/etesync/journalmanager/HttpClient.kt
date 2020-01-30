@@ -1,5 +1,6 @@
 package com.etesync.journalmanager
 
+import com.etesync.journalmanager.util.TokenAuthenticator
 import okhttp3.*
 import java.util.concurrent.TimeUnit
 
@@ -19,26 +20,5 @@ object HttpClient {
         val authHandler = TokenAuthenticator(host, token)
 
         return okHttpClient.newBuilder().addNetworkInterceptor(authHandler).build()
-    }
-
-    private class TokenAuthenticator internal constructor(internal val host: String?, internal val token: String?) : Interceptor {
-        override fun intercept(chain: Interceptor.Chain): Response {
-            var request = chain.request()
-
-            /* Only add to the host we want. */
-            if (host == null || request.url().host() == host) {
-                if (token != null && request.header(HEADER_AUTHORIZATION) == null) {
-                    request = request.newBuilder()
-                            .header(HEADER_AUTHORIZATION, "Token $token")
-                            .build()
-                }
-            }
-
-            return chain.proceed(request)
-        }
-
-        companion object {
-            protected val HEADER_AUTHORIZATION = "Authorization"
-        }
     }
 }
