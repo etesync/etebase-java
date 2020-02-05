@@ -145,6 +145,9 @@ class ServiceTest {
         val journal = JournalManager.Journal(crypto, info.toJson(), info.uid!!)
         journalManager.create(journal)
 
+        // Check that the lastUid is null before there are entries
+        assertEquals(journalManager.list()[0].lastUid, null)
+
         val journalEntryManager = JournalEntryManager(httpClient!!, remote!!, info.uid!!)
         var previousEntry: JournalEntryManager.Entry? = null
         val entry = JournalEntryManager.Entry()
@@ -185,6 +188,9 @@ class ServiceTest {
         assertEquals(retEntries.size.toLong(), 1)
         retEntries = journalEntryManager.list(crypto, entry2.uid, 0)
         assertEquals(retEntries.size.toLong(), 0)
+
+        // Check we get the last sync uid correctly
+        assertEquals(journalManager.list()[0].lastUid, entry2.uid)
 
         // Corrupt the journal and verify we catch it
         entries.clear()
