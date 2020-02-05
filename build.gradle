@@ -7,7 +7,7 @@ apply plugin: 'maven'
 apply plugin: 'signing'
 
 group = "com.etesync"
-version = "1.0.2"
+version = "1.0.3"
 ext.isReleaseVersion = !version.endsWith("SNAPSHOT")
 
 repositories {
