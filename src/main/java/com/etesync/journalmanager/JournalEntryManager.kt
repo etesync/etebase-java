@@ -7,6 +7,7 @@ import okhttp3.HttpUrl
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody
+import java.io.Serializable
 
 class JournalEntryManager(httpClient: OkHttpClient, remote: HttpUrl, val uid: String) : BaseManager() {
 
@@ -73,7 +74,7 @@ class JournalEntryManager(httpClient: OkHttpClient, remote: HttpUrl, val uid: St
         newCall(request)
     }
 
-    class Entry : BaseManager.Base() {
+    class Entry : BaseManager.Base(), Serializable {
 
         fun update(crypto: Crypto.CryptoManager, content: String, previous: Entry?) {
             setContent(crypto, content)

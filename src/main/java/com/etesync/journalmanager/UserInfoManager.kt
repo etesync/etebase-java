@@ -6,6 +6,7 @@ import com.etesync.journalmanager.Crypto.toHex
 import okhttp3.*
 import org.spongycastle.util.Arrays
 import java.io.IOException
+import java.io.Serializable
 import java.net.HttpURLConnection
 
 class UserInfoManager(httpClient: OkHttpClient, remote: HttpUrl) : BaseManager() {
@@ -80,7 +81,7 @@ class UserInfoManager(httpClient: OkHttpClient, remote: HttpUrl) : BaseManager()
         newCall(request)
     }
 
-    class UserInfo {
+    class UserInfo: Serializable {
         @Transient
         var owner: String? = null
         @Transient

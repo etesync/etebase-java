@@ -12,6 +12,7 @@ import okhttp3.Request
 import okhttp3.RequestBody
 import org.spongycastle.util.Arrays
 import java.util.*
+import java.io.Serializable
 
 class JournalManager(httpClient: OkHttpClient, remote: HttpUrl) : BaseManager() {
     init {
@@ -125,7 +126,7 @@ class JournalManager(httpClient: OkHttpClient, remote: HttpUrl) : BaseManager() 
         newCall(request)
     }
 
-    class Journal : BaseManager.Base {
+    class Journal : BaseManager.Base, Serializable {
         val owner: String? = null
         val key: ByteArray? = null
         var version = -1
@@ -188,7 +189,7 @@ class JournalManager(httpClient: OkHttpClient, remote: HttpUrl) : BaseManager() 
         }
     }
 
-    class Member {
+    class Member: Serializable {
         val user: String?
         val key: ByteArray?
         val readOnly: Boolean
