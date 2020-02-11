@@ -1,5 +1,8 @@
 # Changelog
 
+## Version 1.0.4
+* Make all of the API classes serializable (makes it easier to use them).
+
 ## Version 1.0.3
 * Expose the lastUid of journals so we know if we need to fetch a journal or not.
 * Add a TokenAuthenticator utility class for using token authorization
