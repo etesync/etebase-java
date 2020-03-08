@@ -1,5 +1,8 @@
 # Changelog
 
+## Version 1.1.0
+* JournalManager: add a function to fetch a journal by UID
+
 ## Version 1.0.4
 * Make all of the API classes serializable (makes it easier to use them).
 
