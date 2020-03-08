@@ -44,6 +44,22 @@ class JournalManager(httpClient: OkHttpClient, remote: HttpUrl) : BaseManager() 
     }
 
     @Throws(Exceptions.HttpException::class)
+    fun fetch(journalUid: String): Journal {
+        val remote = this.remote!!.resolve(journalUid + "/")
+        val request = Request.Builder()
+                .get()
+                .url(remote!!)
+                .build()
+
+        val response = newCall(request)
+        val body = response.body()
+        val ret = GsonHelper.gson.fromJson(body!!.charStream(), Journal::class.java)
+        ret.processFromJson()
+
+        return ret
+    }
+
+    @Throws(Exceptions.HttpException::class)
     fun delete(journal: Journal) {
         val remote = this.remote!!.resolve(journal.uid!! + "/")
         val request = Request.Builder()

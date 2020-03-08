@@ -95,6 +95,10 @@ class ServiceTest {
         var info2 = CollectionInfo.fromJson(journals[0].getContent(crypto))
         assertEquals(info2.displayName, info.displayName)
 
+        // Fetch journal
+        val journal2 = journalManager.fetch(journal.uid!!)
+        assertEquals(journal.uid, journal2.uid)
+
         // Update journal
         info.displayName = "Test 2"
         journal = JournalManager.Journal(crypto, info.toJson(), info.uid!!)
