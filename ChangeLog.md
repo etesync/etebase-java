@@ -1,5 +1,8 @@
 # Changelog
 
+## Version 1.1.1
+* Consider gateway timeouts as a bad gateway exception.
+
 ## Version 1.1.0
 * JournalManager: add a function to fetch a journal by UID
 
