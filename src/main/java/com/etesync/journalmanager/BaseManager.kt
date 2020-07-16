@@ -27,7 +27,7 @@ abstract class BaseManager {
             } else if (e is SSLHandshakeException && e.cause is SSLProtocolException) {
                 throw e
             }
-            Logger.log.log(Level.SEVERE, "Failed while connecting to server", e)
+            Logger.log.log(Level.SEVERE, "Failed while connecting to server", e.localizedMessage)
             throw Exceptions.ServiceUnavailableException("[" + e.javaClass.name + "] " + e.localizedMessage)
         }
 
