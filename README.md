@@ -3,23 +3,29 @@
   <h1 align="center">EteSync - Secure Data Sync</h1>
 </p>
 
-A Python library for Etebase
+A Java/Android library for Etebase
 
-This package is implemented in Rust and exposes a Python API for people to use.
+This package is implemented in Rust and exposes a Java API for people to use.
 
-![GitHub tag](https://img.shields.io/github/tag/etesync/etesync-rs.svg)
+![GitHub tag](https://img.shields.io/github/tag/etesync/etesync-java.svg)
 [![Chat on freenode](https://img.shields.io/badge/irc.freenode.net-%23EteSync-blue.svg)](https://webchat.freenode.net/?channels=#etesync)
 
 # Build
 
-## Install deps
+Make sure you have the Android NDK in your build path:
 
 ```
-pip install wheel setuptools setuptools-rust
+export PATH="$PATH:/opt/android-sdk/ndk/21.3.6528147/toolchains/llvm/prebuilt/linux-x86_64/bin/"
 ```
 
-## Build
+Add relevant toolchains:
 
 ```
-python setup.py bdist_wheel
+rustup target add aarch64-linux-android armv7-linux-androideabi i686-linux-android x86_64-linux-android
+```
+
+Start the build
+
+```
+./build.sh
 ```
