@@ -90,6 +90,7 @@ dependencies = [
 [[package]]
 name = "etebase"
 version = "0.1.0"
+source = "git+https://github.com/etesync/etesync-rs?branch=etebase#a09b4491ca8831e1b8ccdcd24a6907d1f14cede6"
 dependencies = [
  "block-padding",
  "rmp-serde",
