@@ -266,6 +266,7 @@ foreign_class!(class CollectionManager {
     private constructor = empty;
     fn col_fetch(&self, col_uid: &str, fetch_options: Option<&FetchOptions>) -> Result<Collection>; alias fetch;
     fn CollectionManager::create(&self, meta: &CollectionMetadata, content: &[u8]) -> Result<Collection>; alias create;
+    fn CollectionManager::create_raw(&self, meta: &[u8], content: &[u8]) -> Result<Collection>;
     fn CollectionManager::item_manager(&self, col: &Collection) -> Result<ItemManager>; alias getItemManager;
     fn col_list(&self, fetch_options: Option<&FetchOptions>) -> Result<CollectionListResponse>; alias list;
     fn col_upload(&self, collection: &Collection, fetch_options: Option<&FetchOptions>) -> Result<()>; alias upload;
@@ -313,6 +314,7 @@ foreign_class!(class ItemManager {
     private constructor = empty;
     fn item_fetch(&self, item_uid: &str, fetch_options: Option<&FetchOptions>) -> Result<Item>; alias fetch;
     fn ItemManager::create(&self, meta: &ItemMetadata, content: &[u8]) -> Result<Item>; alias create;
+    fn ItemManager::create_raw(&self, meta: &[u8], content: &[u8]) -> Result<Item>;
     fn item_list(&self, fetch_options: Option<&FetchOptions>) -> Result<ItemListResponse>; alias list;
     fn item_fetch_updates(&self, items: Vec<&Item>, fetch_options: Option<&FetchOptions>) -> Result<ItemListResponse>; alias fetchUpdates;
     fn item_batch(&self, items: Vec<&Item>, deps: Option<Vec<&Item>>, fetch_options: Option<&FetchOptions>) -> Result<()>; alias batch;
