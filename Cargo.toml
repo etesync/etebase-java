@@ -2,7 +2,7 @@
 name = "etebase-android"
 description = "Android bindings to etebase-rs"
 homepage = "https://www.etebase.com"
-repository = "https://github.com/etesync/etesync-rs/tree/etebase/android/"
+repository = "https://github.com/etesync/etesync-java"
 version = "0.1.0"
 authors = ["Tom Hacohen <tom@stosb.com>"]
 edition = "2018"
