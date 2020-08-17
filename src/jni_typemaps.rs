@@ -16,7 +16,6 @@ foreign_typemap!(
                     Error::ProgrammingError(_) => swig_jni_find_class!(ETEBASE_ProgrammingErrorException, "com/etebase/client/exceptions/ProgrammingErrorException"),
                     Error::Padding(_) => swig_jni_find_class!(ETEBASE_PaddingException, "com/etebase/client/exceptions/PaddingException"),
                     Error::Base64(_) => swig_jni_find_class!(ETEBASE_Base64Exception, "com/etebase/client/exceptions/Base64Exception"),
-                    Error::Integrity(_) => swig_jni_find_class!(ETEBASE_IntegrityException, "com/etebase/client/exceptions/IntegrityException"),
                     Error::Encryption(_) => swig_jni_find_class!(ETEBASE_EncryptionException, "com/etebase/client/exceptions/EncryptionException"),
                     Error::Unauthorized(_) => swig_jni_find_class!(ETEBASE_UnauthorizedException, "com/etebase/client/exceptions/UnauthorizedException"),
                     Error::Conflict(_) => swig_jni_find_class!(ETEBASE_ConflictException, "com/etebase/client/exceptions/ConflictException"),
