@@ -1,4 +1,10 @@
 apply plugin: 'com.android.library'
+apply plugin: 'maven-publish'
+apply plugin: 'signing'
+
+group = "com.etebase"
+version = "0.1.0-SNAPSHOT"
+ext.isSnapshot = version.endsWith("SNAPSHOT")
 
 android {
     compileSdkVersion 29
@@ -9,7 +15,7 @@ android {
         minSdkVersion 16
         targetSdkVersion 29
         versionCode 1
-        versionName "0.1.0"
+        versionName version
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
@@ -48,4 +54,76 @@ dependencies {
     androidTestImplementation 'androidx.test:rules:1.1.0'
 
     testImplementation 'junit:junit:4.12'
+}
+
+afterEvaluate {
+    task androidJavadocs(type: Javadoc) {
+        source = android.sourceSets.main.java.srcDirs
+        classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+        exclude '**/R.html', '**/R.*.html', '**/index.html'
+    }
+
+    task androidJavadocsJar(type: Jar, dependsOn: androidJavadocs) {
+        archiveClassifier.set('javadoc')
+        from androidJavadocs.destinationDir
+    }
+
+    task androidSourcesJar(type: Jar) {
+        archiveClassifier.set('sources')
+        from android.sourceSets.main.java.srcDirs
+    }
+
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.release
+
+                artifact androidJavadocsJar
+                artifact androidSourcesJar
+
+                pom {
+                    name = "Etebase Android"
+                    description = "Etebase API client for Android"
+                    url = "https://www.etebase.com"
+                    licenses {
+                        license {
+                            name = "LGPL-3.0-only"
+                            url = "https://spdx.org/licenses/LGPL-3.0-only.html"
+                        }
+                    }
+                    developers {
+                        developer {
+                            id = "tasn"
+                            name = "Tom Hacohen"
+                            email = "maven@stosb.com"
+                        }
+                    }
+                    scm {
+                        connection = "scm:git:git://github.com/etesync/etesync-java.git"
+                        developerConnection = "scm:git:ssh://github.com/etesync/etesync-jvm"
+                        url = "https://github.com/etesync/etesync-java"
+                    }
+                }
+            }
+        }
+
+        repositories {
+            maven {
+                def releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+                def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots/"
+                url = isSnapshot ? snapshotsRepoUrl : releasesRepoUrl
+                credentials {
+                    username = ossrhUsername
+                    password = ossrhPassword
+                }
+            }
+        }
+    }
+
+    if (!isSnapshot) {
+        signing {
+            useGpgCmd()
+            sign publishing.publications.release
+        }
+    }
 }
