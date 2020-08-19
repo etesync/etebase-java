@@ -35,13 +35,11 @@ public class Service {
         byte[] content = col.getContent();
         String str = new String(content, UTF_8);
         assertEquals(str, "Something");
-        FetchOptions fetchOptions = new FetchOptions();
-        fetchOptions.prefetch(true);
+        FetchOptions fetchOptions = new FetchOptions().prefetch(PrefetchOption.Auto);
         col_mgr.upload(col, fetchOptions);
         CollectionListResponse col_list = col_mgr.list(null);
         assertNotEquals(col_list.getData().length, 0);
-        fetchOptions = new FetchOptions();
-        fetchOptions.stoken(col_list.getStoken().get());
+        fetchOptions = new FetchOptions().stoken(col_list.getStoken().get());
         col_list = col_mgr.list(fetchOptions);
         assertEquals(col_list.getData().length, 0);
 
@@ -69,8 +67,7 @@ public class Service {
         ItemListResponse item_list = it_mgr.list(null);
         assertEquals(item_list.getData().length, 1);
         Item it2_first = item_list.getData()[0];
-        fetchOptions = new FetchOptions();
-        fetchOptions.stoken(item_list.getStoken().get());
+        fetchOptions = new FetchOptions().stoken(item_list.getStoken().get());
         item_list = it_mgr.list(fetchOptions);
         assertEquals(item_list.getData().length, 0);
         assertEquals(new String(it2_first.getContent(), UTF_8), "Something item2");
@@ -89,8 +86,7 @@ public class Service {
         Collection col = col_mgr.create(collectionMetadata, "Something".getBytes());
         col_mgr.upload(col, null);
         CollectionListResponse col_list = col_mgr.list(null);
-        FetchOptions fetchOptions = new FetchOptions();
-        fetchOptions.stoken(col_list.getStoken().get());
+        FetchOptions fetchOptions = new FetchOptions().stoken(col_list.getStoken().get());
         col_list = col_mgr.list(fetchOptions);
         assertEquals(0, col_list.getRemovedMemberships().length);
 

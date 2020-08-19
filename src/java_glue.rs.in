@@ -175,11 +175,38 @@ foreign_enum!(enum PrefetchOption {
 foreign_class!(class FetchOptions {
     self_type FetchOptions;
     constructor FetchOptions::new() -> FetchOptions;
-    fn FetchOptions::limit(&mut self, limit: usize);
-    fn FetchOptions::prefetch(&mut self, prefetch: PrefetchOption);
-    fn FetchOptions::with_collection(&mut self, with_collection: bool);
-    fn FetchOptions::iterator(&mut self, iterator: Option<&str>);
-    fn FetchOptions::stoken(&mut self, stoken: Option<&str>);
+    private fn FetchOptions::limit(&mut self, limit: usize); alias _limit;
+    private fn FetchOptions::prefetch(&mut self, prefetch: PrefetchOption); alias _prefetch;
+    private fn FetchOptions::with_collection(&mut self, with_collection: bool); alias _withCollection;
+    private fn FetchOptions::iterator(&mut self, iterator: Option<&str>); alias _iterator;
+    private fn FetchOptions::stoken(&mut self, stoken: Option<&str>); alias _stoken;
+
+    foreign_code r#"
+    public final FetchOptions limit(long limit) {
+        this._limit(limit);
+        return this;
+    }
+
+    public final FetchOptions prefetch(PrefetchOption prefetch) {
+        this._prefetch(prefetch);
+        return this;
+    }
+
+    public final FetchOptions withCollection(boolean withCollection) {
+        this._withCollection(withCollection);
+        return this;
+    }
+
+    public final FetchOptions iterator(String iterator) {
+        this._iterator(iterator);
+        return this;
+    }
+
+    public final FetchOptions stoken(String stoken) {
+        this._stoken(stoken);
+        return this;
+    }
+"#;
 });
 
 mod CollectionMetadataFixes {
