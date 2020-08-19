@@ -133,14 +133,14 @@ public class Service {
 
     @Test
     public void testBase64() {
-        String encoded = Base64Url.toBase64("Test".getBytes());
-        byte[] decoded = Base64Url.fromBase64(encoded);
+        String encoded = Utils.toBase64("Test".getBytes());
+        byte[] decoded = Utils.fromBase64(encoded);
         assertArrayEquals(decoded, "Test".getBytes());
     }
 
     @Test(expected=Base64Exception.class)
     public void base64Exception() {
-        Base64Url.fromBase64("#@$@#$*@#$");
+        Utils.fromBase64("#@$@#$*@#$");
     }
 
     @Test(expected= UnauthorizedException.class)

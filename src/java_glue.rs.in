@@ -17,9 +17,12 @@ use etebase::{
 
     UserProfile,
 
+    pretty_fingerprint,
+
     utils::{
         from_base64,
         to_base64,
+        randombytes,
     },
 
     error::{
@@ -70,16 +73,22 @@ foreign_callback!(callback HttpClient {
     del = HttpClient::delete(&self, url: &str, auth_token: CallbackOption<&str>, response: Response);
 });
 
-foreign_class!(class Base64Url {
+foreign_class!(class Utils {
     fn from_base64(string: &str) -> Result<Vec<u8>>; alias fromBase64;
     fn to_base64(bytes: &[u8]) -> Result<String>; alias toBase64;
+    fn randombytes(size: usize) -> Vec<u8>; alias randomBytes;
+    fn pretty_fingerprint(content: &[u8]) -> String; alias prettyFingerprint;
 });
 
 foreign_class!(class Client {
     self_type Client;
     private constructor = empty;
-    fn client_new_with_impl(server_url: &str, imp: Box<HttpClient>) -> Result<Client>;
+    fn client_new_with_impl(server_url: Option<&str>, imp: Box<HttpClient>) -> Result<Client>;
     fn Client::set_api_base(&mut self, server_url: &str) -> Result<()>; alias setApiBase;
+    fn getDefaultApiUrl() -> &str {
+        etebase::API_URL
+    }
+
     foreign_code r#"
     public static Client create(okhttp3.OkHttpClient client, String server_url) {
         return com.etebase.client.http_bridge.HttpClientBridge.create(client, server_url);
