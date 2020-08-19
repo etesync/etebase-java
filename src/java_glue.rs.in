@@ -148,7 +148,7 @@ foreign_class!(class CollectionListResponse {
     private constructor = empty;
     fn CollectionListResponse::stoken(&self) -> Option<&str>; alias getStoken;
     fn CollectionListResponse::data(&self) -> &Vec<Collection>; alias getData;
-    fn CollectionListResponse::done(&self) -> bool; alias getDone;
+    fn CollectionListResponse::done(&self) -> bool; alias isDone;
     fn getRemovedMemberships(&self) -> Vec<RemovedCollection> {
         match this.removed_memberships() {
             Some(removed) => removed.to_vec(),
@@ -164,7 +164,7 @@ foreign_class!(class ItemListResponse {
     private constructor = empty;
     fn ItemListResponse::stoken(&self) -> Option<&str>; alias getStoken;
     fn ItemListResponse::data(&self) -> &Vec<Item>; alias getData;
-    fn ItemListResponse::done(&self) -> bool; alias getDone;
+    fn ItemListResponse::done(&self) -> bool; alias isDone;
 });
 
 foreign_enum!(enum PrefetchOption {
@@ -422,7 +422,7 @@ foreign_class!(class InvitationListResponse {
     private constructor = empty;
     fn InvitationListResponse::iterator(&self) -> Option<&str>; alias getStoken;
     fn InvitationListResponse::data(&self) -> &Vec<SignedInvitation>; alias getData;
-    fn InvitationListResponse::done(&self) -> bool; alias getDone;
+    fn InvitationListResponse::done(&self) -> bool; alias isDone;
 });
 
 mod CollectionInvitationManagerFixes {
@@ -486,7 +486,7 @@ foreign_class!(class MemberListResponse {
     private constructor = empty;
     fn MemberListResponse::iterator(&self) -> Option<&str>; alias getStoken;
     fn MemberListResponse::data(&self) -> &Vec<CollectionMember>; alias getData;
-    fn MemberListResponse::done(&self) -> bool; alias getDone;
+    fn MemberListResponse::done(&self) -> bool; alias isDone;
 });
 
 foreign_class!(class CollectionMemberManager {
