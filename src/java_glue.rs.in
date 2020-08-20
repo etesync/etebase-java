@@ -174,6 +174,19 @@ foreign_class!(class ItemListResponse {
     private fn fix_nullable_import(_val: Option<&str>);
 });
 
+type ItemRevisionsListResponse = etebase::IteratorListResponse<etebase::Item>;
+
+foreign_class!(class ItemRevisionsListResponse {
+    self_type ItemRevisionsListResponse;
+    private constructor = empty;
+    fn ItemRevisionsListResponse::iterator(&self) -> Option<&str>; alias get_iterator;
+    fn ItemRevisionsListResponse::data(&self) -> &Vec<Item>; alias get_data;
+    fn ItemRevisionsListResponse::done(&self) -> bool; alias is_done;
+
+    private fn fix_nullable_import(_val: Option<&str>);
+});
+
+
 foreign_enum!(enum PrefetchOption {
     Auto = PrefetchOption::Auto,
     Medium = PrefetchOption::Medium,
@@ -353,6 +366,11 @@ pub fn item_list(mgr: &ItemManager, fetch_options: Option<&FetchOptions>) -> Res
     mgr.list(fetch_options.as_ref())
 }
 
+pub fn item_revisions(mgr: &ItemManager, item: &Item, fetch_options: Option<&FetchOptions>) -> Result<ItemRevisionsListResponse> {
+    let fetch_options = fetch_options.map(|x| x.to_fetch_options());
+    mgr.item_revisions(item, fetch_options.as_ref())
+}
+
 pub fn item_fetch_updates(mgr: &ItemManager, items: Vec<&Item>, fetch_options: Option<&FetchOptions>) -> Result<ItemListResponse> {
     let fetch_options = fetch_options.map(|x| x.to_fetch_options());
     mgr.fetch_updates(items.into_iter(), fetch_options.as_ref())
@@ -381,6 +399,7 @@ foreign_class!(class ItemManager {
     fn ItemManager::create(&self, meta: &ItemMetadata, content: &[u8]) -> Result<Item>; alias create;
     fn ItemManager::create_raw(&self, meta: &[u8], content: &[u8]) -> Result<Item>;
     fn item_list(&self, fetch_options: Option<&FetchOptions>) -> Result<ItemListResponse>; alias list;
+    fn item_revisions(mgr: &ItemManager, item: &Item, fetch_options: Option<&FetchOptions>) -> Result<ItemRevisionsListResponse>; alias itemRevisions;
     fn item_fetch_updates(&self, items: Vec<&Item>, fetch_options: Option<&FetchOptions>) -> Result<ItemListResponse>; alias fetchUpdates;
     fn item_batch(&self, items: Vec<&Item>, deps: Option<Vec<&Item>>, fetch_options: Option<&FetchOptions>) -> Result<()>; alias batch;
     fn item_transaction(&self, items: Vec<&Item>, deps: Option<Vec<&Item>>, fetch_options: Option<&FetchOptions>) -> Result<()>; alias transaction;
