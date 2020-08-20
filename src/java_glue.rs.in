@@ -204,12 +204,12 @@ foreign_class!(class FetchOptions {
         return this;
     }
 
-    public final FetchOptions iterator(java.util.Optional<String> iterator) {
+    public final FetchOptions iterator(@Nullable String iterator) {
         this._iterator(iterator);
         return this;
     }
 
-    public final FetchOptions stoken(java.util.Optional<String> stoken) {
+    public final FetchOptions stoken(@Nullable String stoken) {
         this._stoken(stoken);
         return this;
     }

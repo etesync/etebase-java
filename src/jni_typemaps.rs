@@ -40,11 +40,11 @@ foreign_typemap!(
             None => ::std::ptr::null_mut(),
         };
     };
-    ($p:f_type, option = "NoNullAnnotations") => "java.util.Optional<String>" r#"
-        $out = java.util.Optional.ofNullable($p);
+    ($p:f_type, option = "NoNullAnnotations") => "@NonNull String" r#"
+        $out = $p;
 "#;
-    ($p:f_type, option = "NullAnnotations") => "@NonNull java.util.Optional<String>" r#"
-        $out = java.util.Optional.ofNullable($p);
+    ($p:f_type, option = "NullAnnotations") => "@Nullable String" r#"
+        $out = $p;
 "#;
 );
 
