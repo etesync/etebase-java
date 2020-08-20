@@ -319,6 +319,12 @@ foreign_class!(class CollectionManager {
     fn CollectionManager::cache_save_with_content(&self, collection: &Collection) -> Result<Vec<u8>>; alias cacheSaveWithContent;
 
     fn CollectionManager::member_manager(&self, col: &Collection) -> Result<CollectionMemberManager>; alias getMemberManager;
+
+    foreign_code r#"
+    public @NonNull Collection create(@NonNull CollectionMetadata meta, @NonNull String content) throws java.io.UnsupportedEncodingException {
+        return this.create(meta, content.getBytes("UTF-8"));
+    }
+"#;
 });
 
 pub fn item_fetch(mgr: &ItemManager, item_uid: &str, fetch_options: Option<&FetchOptions>) -> Result<Item> {
@@ -366,6 +372,12 @@ foreign_class!(class ItemManager {
     fn ItemManager::cache_load(&self, cached: &[u8]) -> Result<Item>; alias cacheLoad;
     fn ItemManager::cache_save(&self, item: &Item) -> Result<Vec<u8>>; alias cacheSave;
     fn ItemManager::cache_save_with_content(&self, item: &Item) -> Result<Vec<u8>>; alias cacheSaveWithContent;
+
+    foreign_code r#"
+    public @NonNull Item create(@NonNull ItemMetadata meta, @NonNull String content) throws java.io.UnsupportedEncodingException {
+        return this.create(meta, content.getBytes("UTF-8"));
+    }
+"#;
 });
 
 pub fn col_verify(col: &Collection) -> bool {
@@ -394,6 +406,16 @@ foreign_class!(class Collection {
         String::from(this.access_level())
     }
 
+    foreign_code r#"
+    public @NonNull String getContentString() throws java.io.UnsupportedEncodingException {
+        return new String(this.getContent(), "UTF-8");
+    }
+
+    public void setContent(@NonNull String content) throws java.io.UnsupportedEncodingException {
+        this.setContent(content.getBytes("UTF-8"));
+    }
+"#;
+
     private fn fix_nullable_import(_val: Option<&str>);
 });
 
@@ -416,6 +438,16 @@ foreign_class!(class Item {
     fn Item::is_deleted(&self) -> bool; alias isDeleted;
     fn Item::uid(&self) -> &str; alias getUid;
     fn Item::etag(&self) -> &str; alias getEtag;
+
+    foreign_code r#"
+    public @NonNull String getContentString() throws java.io.UnsupportedEncodingException {
+        return new String(this.getContent(), "UTF-8");
+    }
+
+    public void setContent(@NonNull String content) throws java.io.UnsupportedEncodingException {
+        this.setContent(content.getBytes("UTF-8"));
+    }
+"#;
 });
 
 foreign_class!(class UserProfile {

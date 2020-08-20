@@ -8,6 +8,8 @@ import com.etebase.client.exceptions.UnauthorizedException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.io.UnsupportedEncodingException;
+
 import static org.junit.Assert.*;
 
 import okhttp3.OkHttpClient;
@@ -132,6 +134,19 @@ public class Service {
         String encoded = Utils.toBase64("Test".getBytes());
         byte[] decoded = Utils.fromBase64(encoded);
         assertArrayEquals(decoded, "Test".getBytes());
+    }
+
+    @Test
+    public void testStringContent() throws UnsupportedEncodingException {
+        Client client = Client.create(httpClient, SERVER_URL);
+        Account etebase = Account.restore(client, storedSession, null);
+
+        CollectionManager colMgr = etebase.getCollectionManager();
+        CollectionMetadata collectionMetadata = new CollectionMetadata("Type", "Name");
+        Collection col = colMgr.create(collectionMetadata, "Something");
+        assertEquals(col.getContentString(), "Something");
+        col.setContent("Another");
+        assertEquals(col.getContentString(), "Another");
     }
 
     @Test(expected=Base64Exception.class)
