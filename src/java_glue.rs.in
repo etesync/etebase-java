@@ -324,6 +324,22 @@ foreign_class!(class CollectionManager {
     public @NonNull Collection create(@NonNull CollectionMetadata meta, @NonNull String content) throws java.io.UnsupportedEncodingException {
         return this.create(meta, content.getBytes("UTF-8"));
     }
+
+    public @NonNull Collection fetch(@NonNull String col_uid) {
+        return this.fetch(col_uid, null);
+    }
+
+    public @NonNull CollectionListResponse list() {
+        return this.list(null);
+    }
+
+    public void upload(@NonNull Collection collection) {
+        this.upload(collection, null);
+    }
+
+    public void transaction(@NonNull Collection collection) {
+        this.transaction(collection, null);
+    }
 "#;
 });
 
@@ -376,6 +392,34 @@ foreign_class!(class ItemManager {
     foreign_code r#"
     public @NonNull Item create(@NonNull ItemMetadata meta, @NonNull String content) throws java.io.UnsupportedEncodingException {
         return this.create(meta, content.getBytes("UTF-8"));
+    }
+
+    public @NonNull Item fetch(@NonNull String item_uid) {
+        return this.fetch(item_uid, null);
+    }
+
+    public @NonNull ItemListResponse list() {
+        return this.list(null);
+    }
+
+    public @NonNull ItemListResponse fetchUpdates(@NonNull Item[] items) {
+        return this.fetchUpdates(items, null);
+    }
+
+    public void batch(@NonNull Item[] items, @NonNull Item[] deps) {
+        this.batch(items, deps, null);
+    }
+
+    public void batch(@NonNull Item[] items) {
+        this.batch(items, null, null);
+    }
+
+    public void transaction(@NonNull Item[] items, @NonNull Item[] deps) {
+        this.transaction(items, deps, null);
+    }
+
+    public void transaction(@NonNull Item[] items) {
+        this.transaction(items, null, null);
     }
 "#;
 });
