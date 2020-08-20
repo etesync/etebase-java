@@ -421,6 +421,10 @@ foreign_class!(class ItemManager {
         return this.list(null);
     }
 
+    public @NonNull ItemRevisionsListResponse itemRevisions(@NonNull Item item) {
+        return this.itemRevisions(item, null);
+    }
+
     public @NonNull ItemListResponse fetchUpdates(@NonNull Item[] items) {
         return this.fetchUpdates(items, null);
     }
@@ -560,6 +564,16 @@ foreign_class!(class CollectionInvitationManager {
     }
     fn CollectionInvitationManager::disinvite(&self, invitation: &SignedInvitation) -> Result<()>;
     fn CollectionInvitationManager::pubkey(&self) -> &[u8]; alias getPubkey;
+
+    foreign_code r#"
+    public @NonNull InvitationListResponse listIncoming() {
+        return this.listIncoming(null);
+    }
+
+    public @NonNull InvitationListResponse listOutgoing() {
+        return this.listOutgoing(null);
+    }
+"#;
 });
 
 foreign_class!(class SignedInvitation {
@@ -610,4 +624,10 @@ foreign_class!(class CollectionMemberManager {
     fn modifyAccessLevel(&self, username: &str, access_level: &str) -> Result<()> {
         this.modify_access_level(username, &CollectionAccessLevel::from(access_level))
     }
+
+    foreign_code r#"
+    public @NonNull MemberListResponse list() {
+        return this.list(null);
+    }
+"#;
 });
