@@ -29,7 +29,7 @@ public class Service {
     public void testSmoketest() {
         Client client = Client.create(httpClient, SERVER_URL);
         Account etebase = Account.restore(client, storedSession, null);
-        etebase.forceApiBase(SERVER_URL);
+        etebase.forceServerUrl(SERVER_URL);
         etebase.fetchToken();
         CollectionManager col_mgr = etebase.getCollectionManager();
         CollectionMetadata collectionMetadata = new CollectionMetadata("Type", "Name");
@@ -81,7 +81,7 @@ public class Service {
     public void testRemovedCollections() {
         Client client = Client.create(httpClient, SERVER_URL);
         Account etebase = Account.restore(client, storedSession, null);
-        etebase.forceApiBase(SERVER_URL);
+        etebase.forceServerUrl(SERVER_URL);
         etebase.fetchToken();
         CollectionManager col_mgr = etebase.getCollectionManager();
         CollectionMetadata collectionMetadata = new CollectionMetadata("Type", "Name");
@@ -101,7 +101,7 @@ public class Service {
     public void testCache() {
         Client client = Client.create(httpClient, SERVER_URL);
         Account etebase = Account.restore(client, storedSession, null);
-        etebase.forceApiBase(SERVER_URL);
+        etebase.forceServerUrl(SERVER_URL);
         etebase.fetchToken();
         CollectionManager col_mgr = etebase.getCollectionManager();
         CollectionMetadata collectionMetadata = new CollectionMetadata("Type","Name");
@@ -158,7 +158,7 @@ public class Service {
     public void testUanuthorizedException() {
         Client client = Client.create(httpClient, SERVER_URL);
         Account etebase = Account.restore(client, storedSession, null);
-        etebase.forceApiBase(SERVER_URL);
+        etebase.forceServerUrl(SERVER_URL);
         etebase.fetchToken();
         etebase.logout();
         CollectionManager collectionManager = etebase.getCollectionManager();

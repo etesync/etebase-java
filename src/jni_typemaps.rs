@@ -19,6 +19,7 @@ foreign_typemap!(
                     Error::Unauthorized(_) => swig_jni_find_class!(ETEBASE_UnauthorizedException, "com/etebase/client/exceptions/UnauthorizedException"),
                     Error::Conflict(_) => swig_jni_find_class!(ETEBASE_ConflictException, "com/etebase/client/exceptions/ConflictException"),
                     Error::PermissionDenied(_) => swig_jni_find_class!(ETEBASE_PermissionDeniedException, "com/etebase/client/exceptions/PermissionDeniedException"),
+                    Error::NotFound(_) => swig_jni_find_class!(ETEBASE_NotFoundException, "com/etebase/client/exceptions/NotFoundException"),
                     Error::Connection(_) => swig_jni_find_class!(ETEBASE_ConnectionException, "com/etebase/client/exceptions/ConnectionException"),
                     Error::TemporaryServerError(_) => swig_jni_find_class!(ETEBASE_TemporaryServerErrorException, "com/etebase/client/exceptions/TemporaryServerErrorException"),
                     Error::ServerError(_) => swig_jni_find_class!(ETEBASE_ServerErrorException, "com/etebase/client/exceptions/ServerErrorException"),

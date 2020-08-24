@@ -87,7 +87,7 @@ foreign_class!(class Client {
     self_type Client;
     private constructor = empty;
     fn client_new_with_impl(server_url: Option<&str>, imp: Box<HttpClient>) -> Result<Client>;
-    fn Client::set_api_base(&mut self, server_url: &str) -> Result<()>; alias setApiBase;
+    fn Client::set_server_url(&mut self, server_url: &str) -> Result<()>; alias setServerUrl;
     fn getDefaultApiUrl() -> &str {
         etebase::API_URL
     }
@@ -126,7 +126,7 @@ foreign_class!(class Account {
         Account::signup(client.clone(), user, password)
     }
     fn Account::fetch_token(&mut self) -> Result<()>; alias fetchToken;
-    fn Account::force_api_base(&mut self, api_base: &str) -> Result<()>; alias forceApiBase;
+    fn Account::force_server_url(&mut self, api_base: &str) -> Result<()>; alias forceServerUrl;
     fn Account::change_password(&mut self, password: &str) -> Result<()>; alias changePassword;
     fn Account::logout(&mut self) -> Result<()>;
     fn Account::collection_manager(&self) -> Result<CollectionManager>; alias getCollectionManager;
