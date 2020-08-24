@@ -11,8 +11,7 @@ foreign_typemap!(
                 let msg = err.to_string();
                 let exception_class = match err {
                     Error::UrlParse(_) => swig_jni_find_class!(ETEBASE_UrlParseException, "com/etebase/client/exceptions/UrlParseException"),
-                    Error::MsgPackEncode(_) => swig_jni_find_class!(ETEBASE_MsgPackEncodeException, "com/etebase/client/exceptions/MsgPackEncodeException"),
-                    Error::MsgPackDecode(_) => swig_jni_find_class!(ETEBASE_MsgPackDecodeException, "com/etebase/client/exceptions/MsgPackDecodeException"),
+                    Error::MsgPack(_) => swig_jni_find_class!(ETEBASE_MsgPackEncodeException, "com/etebase/client/exceptions/MsgPackEncodeException"),
                     Error::ProgrammingError(_) => swig_jni_find_class!(ETEBASE_ProgrammingErrorException, "com/etebase/client/exceptions/ProgrammingErrorException"),
                     Error::Padding(_) => swig_jni_find_class!(ETEBASE_PaddingException, "com/etebase/client/exceptions/PaddingException"),
                     Error::Base64(_) => swig_jni_find_class!(ETEBASE_Base64Exception, "com/etebase/client/exceptions/Base64Exception"),
@@ -21,6 +20,8 @@ foreign_typemap!(
                     Error::Conflict(_) => swig_jni_find_class!(ETEBASE_ConflictException, "com/etebase/client/exceptions/ConflictException"),
                     Error::PermissionDenied(_) => swig_jni_find_class!(ETEBASE_PermissionDeniedException, "com/etebase/client/exceptions/PermissionDeniedException"),
                     Error::Connection(_) => swig_jni_find_class!(ETEBASE_ConnectionException, "com/etebase/client/exceptions/ConnectionException"),
+                    Error::TemporaryServerError(_) => swig_jni_find_class!(ETEBASE_TemporaryServerErrorException, "com/etebase/client/exceptions/TemporaryServerErrorException"),
+                    Error::ServerError(_) => swig_jni_find_class!(ETEBASE_ServerErrorException, "com/etebase/client/exceptions/ServerErrorException"),
                     Error::Http(_) => swig_jni_find_class!(ETEBASE_HttpException, "com/etebase/client/exceptions/HttpException"),
                     _ => swig_jni_find_class!(ETEBASE_EtebaseException, "com/etebase/client/exceptions/EtebaseException"),
                 };
