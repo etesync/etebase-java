@@ -11,7 +11,7 @@ foreign_typemap!(
                 let msg = err.to_string();
                 let exception_class = match err {
                     Error::UrlParse(_) => swig_jni_find_class!(ETEBASE_UrlParseException, "com/etebase/client/exceptions/UrlParseException"),
-                    Error::MsgPack(_) => swig_jni_find_class!(ETEBASE_MsgPackEncodeException, "com/etebase/client/exceptions/MsgPackEncodeException"),
+                    Error::MsgPack(_) => swig_jni_find_class!(ETEBASE_MsgPackException, "com/etebase/client/exceptions/MsgPackException"),
                     Error::ProgrammingError(_) => swig_jni_find_class!(ETEBASE_ProgrammingErrorException, "com/etebase/client/exceptions/ProgrammingErrorException"),
                     Error::Padding(_) => swig_jni_find_class!(ETEBASE_PaddingException, "com/etebase/client/exceptions/PaddingException"),
                     Error::Base64(_) => swig_jni_find_class!(ETEBASE_Base64Exception, "com/etebase/client/exceptions/Base64Exception"),
