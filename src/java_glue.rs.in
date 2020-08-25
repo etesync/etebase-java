@@ -55,9 +55,6 @@ fn response_reset_ok(resp: &mut Response, bytes: &[u8], status: u16) {
     resp.reset_ok(bytes.to_vec(), status);
 }
 
-fn fix_nullable_import(_value: Option<&str>) {
-}
-
 foreign_class!(class Response {
     self_type Response;
     private constructor = empty;
@@ -158,8 +155,6 @@ foreign_class!(class CollectionListResponse {
             None => vec![],
         }
     }
-
-    private fn fix_nullable_import(_val: Option<&str>);
 });
 
 type ItemListResponse = etebase::ItemListResponse<Item>;
@@ -170,8 +165,6 @@ foreign_class!(class ItemListResponse {
     fn ItemListResponse::stoken(&self) -> Option<&str>; alias getStoken;
     fn ItemListResponse::data(&self) -> &Vec<Item>; alias getData;
     fn ItemListResponse::done(&self) -> bool; alias isDone;
-
-    private fn fix_nullable_import(_val: Option<&str>);
 });
 
 type ItemRevisionsListResponse = etebase::IteratorListResponse<etebase::Item>;
@@ -182,8 +175,6 @@ foreign_class!(class ItemRevisionsListResponse {
     fn ItemRevisionsListResponse::iterator(&self) -> Option<&str>; alias get_iterator;
     fn ItemRevisionsListResponse::data(&self) -> &Vec<Item>; alias get_data;
     fn ItemRevisionsListResponse::done(&self) -> bool; alias is_done;
-
-    private fn fix_nullable_import(_val: Option<&str>);
 });
 
 
@@ -482,8 +473,6 @@ foreign_class!(class Collection {
         this.setContent(content.getBytes("UTF-8"));
     }
 "#;
-
-    private fn fix_nullable_import(_val: Option<&str>);
 });
 
 pub fn item_verify(item: &Item) -> bool {
@@ -531,8 +520,6 @@ foreign_class!(class InvitationListResponse {
     fn InvitationListResponse::iterator(&self) -> Option<&str>; alias getStoken;
     fn InvitationListResponse::data(&self) -> &Vec<SignedInvitation>; alias getData;
     fn InvitationListResponse::done(&self) -> bool; alias isDone;
-
-    private fn fix_nullable_import(_val: Option<&str>);
 });
 
 mod CollectionInvitationManagerFixes {
@@ -607,8 +594,6 @@ foreign_class!(class MemberListResponse {
     fn MemberListResponse::iterator(&self) -> Option<&str>; alias getStoken;
     fn MemberListResponse::data(&self) -> &Vec<CollectionMember>; alias getData;
     fn MemberListResponse::done(&self) -> bool; alias isDone;
-
-    private fn fix_nullable_import(_val: Option<&str>);
 });
 
 foreign_class!(class CollectionMemberManager {
