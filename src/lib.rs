@@ -102,7 +102,7 @@ impl ClientImplementation for JavaHttpClient {
 
 pub fn client_new_with_impl(server_url: Option<&str>, imp: Box<dyn HttpClient>) -> Result<Client> {
     let imp = Box::new(JavaHttpClient::new(imp));
-    Client::new_with_impl(server_url.unwrap_or(etebase::API_URL), imp)
+    Client::new_with_impl(server_url.unwrap_or(etebase::DEFAULT_SERVER_URL), imp)
 }
 
 pub struct FetchOptions {
