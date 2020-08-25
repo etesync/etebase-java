@@ -85,7 +85,7 @@ foreign_class!(class Client {
     private constructor = empty;
     fn client_new_with_impl(server_url: Option<&str>, imp: Box<HttpClient>) -> Result<Client>;
     fn Client::set_server_url(&mut self, server_url: &str) -> Result<()>; alias setServerUrl;
-    fn getDefaultApiUrl() -> &str {
+    fn getDefaultServerUrl() -> &str {
         etebase::API_URL
     }
 
