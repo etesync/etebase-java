@@ -257,7 +257,14 @@ foreign_class!(class CollectionMetadata {
     fn CollectionMetadata::name(&self) -> &str; alias getName;
     fn CollectionMetadata::description(&self) -> Option<&str>; alias getDescription;
     fn CollectionMetadata::color(&self) -> Option<&str>; alias getColor;
-    fn CollectionMetadata::mtime(&self) -> Option<i64>; alias getMtime;
+    private fn CollectionMetadata::mtime(&self) -> Option<i64>; alias getMtimeOpt;
+
+    foreign_code r#"
+    public @Nullable Long getMtime() {
+        java.util.OptionalLong mtime = getMtimeOpt();
+        return (mtime.isPresent()) ? mtime.getAsLong() : null;
+    }
+"#;
 });
 
 mod ItemMetadataFixes {
@@ -285,7 +292,14 @@ foreign_class!(class ItemMetadata {
     fn ItemMetadataFixes::setMtime(&mut self, mtime: Option<i64>);
     fn ItemMetadata::item_type(&self) -> Option<&str>; alias getItemType;
     fn ItemMetadata::name(&self) -> Option<&str>; alias getName;
-    fn ItemMetadata::mtime(&self) -> Option<i64>; alias getMtime;
+    private fn ItemMetadata::mtime(&self) -> Option<i64>; alias getMtimeOpt;
+
+    foreign_code r#"
+    public @Nullable Long getMtime() {
+        java.util.OptionalLong mtime = getMtimeOpt();
+        return (mtime.isPresent()) ? mtime.getAsLong() : null;
+    }
+"#;
 });
 
 pub fn col_fetch(mgr: &CollectionManager, col_uid: &str, fetch_options: Option<&FetchOptions>) -> Result<Collection> {
