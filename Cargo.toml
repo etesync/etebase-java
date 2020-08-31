@@ -21,7 +21,7 @@ log = "0.4.6"
 log-panics = "2.0"
 android_logger = "0.8"
 jni-sys = "0.3.0"
-etebase = { git = "https://github.com/etesync/etesync-rs", rev = "9d1438e419c67a5f3448a037d4e363e8b44897aa", default-features = false }
+etebase = { git = "https://github.com/etesync/etesync-rs", rev = "5cace92804a984301a2ff6657eb409fccffc72f5", default-features = false }
 
 [features]
 default = ["android"]
