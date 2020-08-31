@@ -116,6 +116,14 @@ foreign_class!(class User {
 foreign_class!(class Account {
     self_type Account;
     private constructor = empty;
+    fn isEtebaseServer(client: &Client) -> Result<()> {
+        // JNI can't do exceptions when returning bool so throw on error
+        match Account::is_etebase_server(client) {
+            Ok(true) => Ok(()),
+            Ok(false) => Err(Error::NotFound("Not an Etebase server".to_string())),
+            Err(err) => Err(err),
+        }
+    }
     fn login(client: &Client, username: &str, password: &str) -> Result<Account> {
         Account::login(client.clone(), username, password)
     }
