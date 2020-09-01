@@ -180,9 +180,9 @@ type ItemRevisionsListResponse = etebase::IteratorListResponse<etebase::Item>;
 foreign_class!(class ItemRevisionsListResponse {
     self_type ItemRevisionsListResponse;
     private constructor = empty;
-    fn ItemRevisionsListResponse::iterator(&self) -> Option<&str>; alias get_iterator;
-    fn ItemRevisionsListResponse::data(&self) -> &Vec<Item>; alias get_data;
-    fn ItemRevisionsListResponse::done(&self) -> bool; alias is_done;
+    fn ItemRevisionsListResponse::iterator(&self) -> Option<&str>; alias getIterator;
+    fn ItemRevisionsListResponse::data(&self) -> &Vec<Item>; alias getData;
+    fn ItemRevisionsListResponse::done(&self) -> bool; alias isDone;
 });
 
 
