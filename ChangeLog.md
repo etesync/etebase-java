@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 0.1.4
+* Expose access level values as an enum
+* Update etebase dependency
+
 ## Version 0.1.3
 * Update etebase dependency
 * HttpException: don't inherit from ConnectionException.
