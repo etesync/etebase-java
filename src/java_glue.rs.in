@@ -460,6 +460,12 @@ foreign_class!(class ItemManager {
 "#;
 });
 
+foreign_enum!(enum CollectionAccessLevel {
+    ReadOnly = CollectionAccessLevel::ReadOnly,
+    Admin = CollectionAccessLevel::Admin,
+    ReadWrite = CollectionAccessLevel::ReadWrite,
+});
+
 pub fn col_verify(col: &Collection) -> bool {
     col.verify().unwrap_or(false)
 }
@@ -481,10 +487,7 @@ foreign_class!(class Collection {
     fn Collection::etag(&self) -> &str; alias getEtag;
     fn Collection::stoken(&self) -> Option<&str>; alias getStoken;
     fn Collection::item(&self) -> Result<Item>; alias asItem;
-
-    fn getAccessLevel(&self) -> String {
-        String::from(this.access_level())
-    }
+    fn Collection::access_level(&self) -> CollectionAccessLevel; alias getAccessLevel;
 
     foreign_code r#"
     public @NonNull String getContentString() throws java.io.UnsupportedEncodingException {
@@ -568,9 +571,7 @@ foreign_class!(class CollectionInvitationManager {
     fn CollectionInvitationManager::accept(&self, invitation: &SignedInvitation) -> Result<()>;
     fn CollectionInvitationManager::reject(&self, invitation: &SignedInvitation) -> Result<()>;
     fn CollectionInvitationManager::fetch_user_profile(&self, username: &str) -> Result<UserProfile>; alias fetchUserProfile;
-    fn invite(&self, collection: &Collection, username: &str, pubkey: &[u8], access_level: &str) -> Result<()> {
-        this.invite(collection, username, pubkey, &CollectionAccessLevel::from(access_level))
-    }
+    fn CollectionInvitationManager::invite(&self, collection: &Collection, username: &str, pubkey: &[u8], access_level: CollectionAccessLevel) -> Result<()>;
     fn CollectionInvitationManager::disinvite(&self, invitation: &SignedInvitation) -> Result<()>;
     fn CollectionInvitationManager::pubkey(&self) -> &[u8]; alias getPubkey;
 
@@ -592,9 +593,7 @@ foreign_class!(class SignedInvitation {
     fn SignedInvitation::uid(&self) -> &str; alias getUid;
     fn SignedInvitation::username(&self) -> &str; alias getUsername;
     fn SignedInvitation::collection(&self) -> &str; alias getCollection;
-    fn getAccessLevel(&self) -> String {
-        String::from(this.access_level())
-    }
+    fn SignedInvitation::access_level(&self) -> CollectionAccessLevel; alias getAccessLevel;
     fn SignedInvitation::from_pubkey(&self) -> &[u8]; alias getFromPubkey;
 });
 
@@ -603,9 +602,7 @@ foreign_class!(class CollectionMember {
     private constructor = empty;
 
     fn CollectionMember::username(&self) -> &str; alias getUsername;
-    fn getAccessLevel(&self) -> String {
-        String::from(this.access_level())
-    }
+    fn CollectionMember::access_level(&self) -> CollectionAccessLevel; alias getAccessLevel;
 });
 
 type MemberListResponse = etebase::IteratorListResponse<CollectionMember>;
@@ -628,9 +625,7 @@ foreign_class!(class CollectionMemberManager {
     }
     fn CollectionMemberManager::remove(&self, username: &str) -> Result<()>;
     fn CollectionMemberManager::leave(&self) -> Result<()>;
-    fn modifyAccessLevel(&self, username: &str, access_level: &str) -> Result<()> {
-        this.modify_access_level(username, &CollectionAccessLevel::from(access_level))
-    }
+    fn CollectionMemberManager::modify_access_level(&self, username: &str, access_level: CollectionAccessLevel) -> Result<()>; alias modifyAccessLevel;
 
     foreign_code r#"
     public @NonNull MemberListResponse list() {
