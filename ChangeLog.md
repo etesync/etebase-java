@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 0.2.0
+* Use new and shorter fingerprint pretty format
+* Update etebase dependency
+
 ## Version 0.1.4
 * Expose access level values as an enum
 * Update etebase dependency
