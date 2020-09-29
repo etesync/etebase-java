@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 0.2.1
+* Expose fromUsername for invitations
+* Update etebase dependency
+
 ## Version 0.2.0
 * Use new and shorter fingerprint pretty format
 * Update etebase dependency
