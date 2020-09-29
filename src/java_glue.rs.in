@@ -594,6 +594,7 @@ foreign_class!(class SignedInvitation {
     fn SignedInvitation::username(&self) -> &str; alias getUsername;
     fn SignedInvitation::collection(&self) -> &str; alias getCollection;
     fn SignedInvitation::access_level(&self) -> CollectionAccessLevel; alias getAccessLevel;
+    fn SignedInvitation::from_username(&self) -> Option<&str>; alias getFromUsername;
     fn SignedInvitation::from_pubkey(&self) -> &[u8]; alias getFromPubkey;
 });
 
