@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 0.2.2
+* Expose FileSystemCache class for caching etebase object on the FS
+* Update etebase dependency
+
 ## Version 0.2.1
 * Expose fromUsername for invitations
 * Update etebase dependency
