@@ -137,6 +137,7 @@ foreign_class!(class Account {
     fn Account::fetch_token(&mut self) -> Result<()>; alias fetchToken;
     fn Account::force_server_url(&mut self, api_base: &str) -> Result<()>; alias forceServerUrl;
     fn Account::change_password(&mut self, password: &str) -> Result<()>; alias changePassword;
+    fn Account::fetch_dashboard_url(&self) -> Result<String>; alias fetchDashboardUrl;
     fn Account::logout(&mut self) -> Result<()>;
     fn Account::collection_manager(&self) -> Result<CollectionManager>; alias getCollectionManager;
     fn Account::invitation_manager(&self) -> Result<CollectionInvitationManager>; alias getInvitationManager;

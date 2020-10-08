@@ -143,7 +143,7 @@ dependencies = [
 [[package]]
 name = "etebase"
 version = "0.1.0"
-source = "git+https://github.com/etesync/etesync-rs?rev=724f639bb3269c2059e3a7c35c9781d36a70e825#724f639bb3269c2059e3a7c35c9781d36a70e825"
+source = "git+https://github.com/etesync/etesync-rs?rev=c123e27af21fc8bc7bc0d0cfc1b8c0db493098e0#c123e27af21fc8bc7bc0d0cfc1b8c0db493098e0"
 dependencies = [
  "block-padding",
  "remove_dir_all",
