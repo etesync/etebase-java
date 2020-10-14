@@ -3,7 +3,7 @@ apply plugin: 'maven-publish'
 apply plugin: 'signing'
 
 group = "com.etebase"
-version = "2.0.1-SNAPSHOT"
+version = "2.1.0"
 ext.isSnapshot = version.endsWith("SNAPSHOT")
 
 android {
