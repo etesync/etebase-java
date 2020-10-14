@@ -6,7 +6,6 @@ use etebase::{
     Account,
 
     Collection,
-    CollectionMetadata,
     Item,
     ItemMetadata,
 
@@ -233,53 +232,6 @@ foreign_class!(class FetchOptions {
 "#;
 });
 
-mod CollectionMetadataFixes {
-    #![allow(non_snake_case)]
-    use super::*;
-
-    pub fn setCollectionType(md: &mut CollectionMetadata, type_: &str) {
-        md.set_collection_type(type_);
-    }
-
-    pub fn setName(md: &mut CollectionMetadata, name: &str) {
-        md.set_name(name);
-    }
-
-    pub fn setDescription(md: &mut CollectionMetadata, description: Option<&str>) {
-        md.set_description(description);
-    }
-
-    pub fn setColor(md: &mut CollectionMetadata, color: Option<&str>) {
-        md.set_color(color);
-    }
-
-    pub fn setMtime(md: &mut CollectionMetadata, mtime: Option<i64>) {
-        md.set_mtime(mtime);
-    }
-}
-
-foreign_class!(class CollectionMetadata {
-    self_type CollectionMetadata;
-    constructor CollectionMetadata::new(type_: &str, name: &str) -> CollectionMetadata;
-    fn CollectionMetadataFixes::setCollectionType(&mut self, type_: &str);
-    fn CollectionMetadataFixes::setName(&mut self, name: &str);
-    fn CollectionMetadataFixes::setDescription(&mut self, description: Option<&str>);
-    fn CollectionMetadataFixes::setColor(&mut self, color: Option<&str>);
-    fn CollectionMetadataFixes::setMtime(&mut self, mtime: Option<i64>);
-    fn CollectionMetadata::collection_type(&self) -> &str; alias getCollectionType;
-    fn CollectionMetadata::name(&self) -> &str; alias getName;
-    fn CollectionMetadata::description(&self) -> Option<&str>; alias getDescription;
-    fn CollectionMetadata::color(&self) -> Option<&str>; alias getColor;
-    private fn CollectionMetadata::mtime(&self) -> Option<i64>; alias getMtimeOpt;
-
-    foreign_code r#"
-    public @Nullable Long getMtime() {
-        java.util.OptionalLong mtime = getMtimeOpt();
-        return (mtime.isPresent()) ? mtime.getAsLong() : null;
-    }
-"#;
-});
-
 mod ItemMetadataFixes {
     #![allow(non_snake_case)]
     use super::*;
@@ -295,6 +247,14 @@ mod ItemMetadataFixes {
     pub fn setMtime(md: &mut ItemMetadata, mtime: Option<i64>) {
         md.set_mtime(mtime);
     }
+
+    pub fn setDescription(md: &mut ItemMetadata, description: Option<&str>) {
+        md.set_description(description);
+    }
+
+    pub fn setColor(md: &mut ItemMetadata, color: Option<&str>) {
+        md.set_color(color);
+    }
 }
 
 foreign_class!(class ItemMetadata {
@@ -303,9 +263,13 @@ foreign_class!(class ItemMetadata {
     fn ItemMetadataFixes::setItemType(&mut self, type_: Option<&str>);
     fn ItemMetadataFixes::setName(&mut self, name: Option<&str>);
     fn ItemMetadataFixes::setMtime(&mut self, mtime: Option<i64>);
+    fn ItemMetadataFixes::setDescription(&mut self, description: Option<&str>);
+    fn ItemMetadataFixes::setColor(&mut self, color: Option<&str>);
     fn ItemMetadata::item_type(&self) -> Option<&str>; alias getItemType;
     fn ItemMetadata::name(&self) -> Option<&str>; alias getName;
     private fn ItemMetadata::mtime(&self) -> Option<i64>; alias getMtimeOpt;
+    fn ItemMetadata::description(&self) -> Option<&str>; alias getDescription;
+    fn ItemMetadata::color(&self) -> Option<&str>; alias getColor;
 
     foreign_code r#"
     public @Nullable Long getMtime() {
@@ -320,9 +284,9 @@ pub fn col_fetch(mgr: &CollectionManager, col_uid: &str, fetch_options: Option<&
     mgr.fetch(col_uid, fetch_options.as_ref())
 }
 
-pub fn col_list(mgr: &CollectionManager, fetch_options: Option<&FetchOptions>) -> Result<CollectionListResponse> {
+pub fn col_list(mgr: &CollectionManager, collection_type: &str, fetch_options: Option<&FetchOptions>) -> Result<CollectionListResponse> {
     let fetch_options = fetch_options.map(|x| x.to_fetch_options());
-    mgr.list(fetch_options.as_ref())
+    mgr.list(collection_type, fetch_options.as_ref())
 }
 
 pub fn col_upload(mgr: &CollectionManager, collection: &Collection, fetch_options: Option<&FetchOptions>) -> Result<()> {
@@ -339,10 +303,10 @@ foreign_class!(class CollectionManager {
     self_type CollectionManager;
     private constructor = empty;
     fn col_fetch(&self, col_uid: &str, fetch_options: Option<&FetchOptions>) -> Result<Collection>; alias fetch;
-    fn CollectionManager::create(&self, meta: &CollectionMetadata, content: &[u8]) -> Result<Collection>; alias create;
-    fn CollectionManager::create_raw(&self, meta: &[u8], content: &[u8]) -> Result<Collection>;
+    fn CollectionManager::create(&self, collection_type: &str, meta: &ItemMetadata, content: &[u8]) -> Result<Collection>; alias create;
+    fn CollectionManager::create_raw(&self, collection_type: &str, meta: &[u8], content: &[u8]) -> Result<Collection>;
     fn CollectionManager::item_manager(&self, col: &Collection) -> Result<ItemManager>; alias getItemManager;
-    fn col_list(&self, fetch_options: Option<&FetchOptions>) -> Result<CollectionListResponse>; alias list;
+    fn col_list(&self, collection_type: &str, fetch_options: Option<&FetchOptions>) -> Result<CollectionListResponse>; alias list;
     fn col_upload(&self, collection: &Collection, fetch_options: Option<&FetchOptions>) -> Result<()>; alias upload;
     fn col_transaction(&self, collection: &Collection, fetch_options: Option<&FetchOptions>) -> Result<()>; alias transaction;
     fn CollectionManager::cache_load(&self, cached: &[u8]) -> Result<Collection>; alias cacheLoad;
@@ -352,16 +316,16 @@ foreign_class!(class CollectionManager {
     fn CollectionManager::member_manager(&self, col: &Collection) -> Result<CollectionMemberManager>; alias getMemberManager;
 
     foreign_code r#"
-    public @NonNull Collection create(@NonNull CollectionMetadata meta, @NonNull String content) throws java.io.UnsupportedEncodingException {
-        return this.create(meta, content.getBytes("UTF-8"));
+    public @NonNull Collection create(@NonNull String collectionType, @NonNull ItemMetadata meta, @NonNull String content) throws java.io.UnsupportedEncodingException {
+        return this.create(collectionType, meta, content.getBytes("UTF-8"));
     }
 
     public @NonNull Collection fetch(@NonNull String col_uid) {
         return this.fetch(col_uid, null);
     }
 
-    public @NonNull CollectionListResponse list() {
-        return this.list(null);
+    public @NonNull CollectionListResponse list(@NonNull String collectionType) {
+        return this.list(collectionType, null);
     }
 
     public void upload(@NonNull Collection collection) {
@@ -480,8 +444,8 @@ foreign_class!(class Collection {
     private constructor = empty;
     fn col_verify(&self) -> bool; alias verify;
 
-    fn Collection::set_meta(&mut self, meta: &CollectionMetadata) -> Result<()>; alias setMeta;
-    fn Collection::meta(&self) -> Result<CollectionMetadata>; alias getMeta;
+    fn Collection::set_meta(&mut self, meta: &ItemMetadata) -> Result<()>; alias setMeta;
+    fn Collection::meta(&self) -> Result<ItemMetadata>; alias getMeta;
     fn Collection::set_meta_raw(&mut self, meta: &[u8]) -> Result<()>; alias setMetaRaw;
     fn Collection::meta_raw(&self) -> Result<Vec<u8>>; alias getMetaRaw;
     fn Collection::set_content(&mut self, content: &[u8]) -> Result<()>; alias setContent;
@@ -493,6 +457,7 @@ foreign_class!(class Collection {
     fn Collection::stoken(&self) -> Option<&str>; alias getStoken;
     fn Collection::item(&self) -> Result<Item>; alias asItem;
     fn Collection::access_level(&self) -> CollectionAccessLevel; alias getAccessLevel;
+    fn Collection::collection_type(&self) -> Result<String>; alias getCollectionType;
 
     foreign_code r#"
     public @NonNull String getContentString() throws java.io.UnsupportedEncodingException {
