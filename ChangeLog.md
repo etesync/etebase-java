@@ -1,5 +1,8 @@
 # Changelog
 
+## Version 2.2.0
+* Collection manager list: support passing arrays of collection types
+
 ## Version 2.1.0
 * Login: automatically init the account if not init
 * Have global and immutable collection types (changes the create and list APIs)
