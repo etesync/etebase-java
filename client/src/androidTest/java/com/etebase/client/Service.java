@@ -109,6 +109,16 @@ public class Service {
         Collection col = col_mgr.create(COL_TYPE, collectionMetadata, "Something".getBytes());
         col_mgr.upload(col,null);
 
+        {
+            CollectionListResponse collections = col_mgr.list(COL_TYPE, null);
+            int length = collections.getData().length;
+            assert(length > 0);
+            collections = col_mgr.list(new String[] {"bad1", COL_TYPE, "bad2"}, null);
+            assertEquals(length, collections.getData().length);
+            collections = col_mgr.list(new String[] {"bad1", "bad2"});
+            assertEquals(0, collections.getData().length);
+        }
+
         String cached = etebase.save(null);
         etebase = Account.restore(client, cached,null);
         col_mgr = etebase.getCollectionManager();
@@ -163,6 +173,6 @@ public class Service {
         etebase.fetchToken();
         etebase.logout();
         CollectionManager collectionManager = etebase.getCollectionManager();
-        collectionManager.list(null);
+        collectionManager.list(COL_TYPE, null);
     }
 }

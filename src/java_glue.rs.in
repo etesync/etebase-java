@@ -289,6 +289,11 @@ pub fn col_list(mgr: &CollectionManager, collection_type: &str, fetch_options: O
     mgr.list(collection_type, fetch_options.as_ref())
 }
 
+pub fn col_list_multi(mgr: &CollectionManager, collection_types: Vec<String>, fetch_options: Option<&FetchOptions>) -> Result<CollectionListResponse> {
+    let fetch_options = fetch_options.map(|x| x.to_fetch_options());
+    mgr.list_multi(collection_types.iter().map(|x| &x[..]), fetch_options.as_ref())
+}
+
 pub fn col_upload(mgr: &CollectionManager, collection: &Collection, fetch_options: Option<&FetchOptions>) -> Result<()> {
     let fetch_options = fetch_options.map(|x| x.to_fetch_options());
     mgr.upload(collection, fetch_options.as_ref())
@@ -307,6 +312,7 @@ foreign_class!(class CollectionManager {
     fn CollectionManager::create_raw(&self, collection_type: &str, meta: &[u8], content: &[u8]) -> Result<Collection>;
     fn CollectionManager::item_manager(&self, col: &Collection) -> Result<ItemManager>; alias getItemManager;
     fn col_list(&self, collection_type: &str, fetch_options: Option<&FetchOptions>) -> Result<CollectionListResponse>; alias list;
+    private fn col_list_multi(&self, collection_types: Vec<String>, fetch_options: Option<&FetchOptions>) -> Result<CollectionListResponse>; alias listMulti;
     fn col_upload(&self, collection: &Collection, fetch_options: Option<&FetchOptions>) -> Result<()>; alias upload;
     fn col_transaction(&self, collection: &Collection, fetch_options: Option<&FetchOptions>) -> Result<()>; alias transaction;
     fn CollectionManager::cache_load(&self, cached: &[u8]) -> Result<Collection>; alias cacheLoad;
@@ -326,6 +332,14 @@ foreign_class!(class CollectionManager {
 
     public @NonNull CollectionListResponse list(@NonNull String collectionType) {
         return this.list(collectionType, null);
+    }
+
+    public @NonNull CollectionListResponse list(@NonNull String[] collectionTypes, FetchOptions fetchOptions) {
+        return this.listMulti(collectionTypes, fetchOptions);
+    }
+
+    public @NonNull CollectionListResponse list(@NonNull String[] collectionTypes) {
+        return this.listMulti(collectionTypes, null);
     }
 
     public void upload(@NonNull Collection collection) {
