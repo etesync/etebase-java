@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 2.1.0
+* Login: automatically init the account if not init
+* Have global and immutable collection types (changes the create and list APIs)
+* Update etebase dependency
+
 ## Version 2.0.0
 * Just a version bump for packaging
 
