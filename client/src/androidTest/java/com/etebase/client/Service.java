@@ -99,6 +99,19 @@ public class Service {
     }
 
     @Test
+    public void testMetaMtimeNull() {
+        ItemMetadata itemMetadata = new ItemMetadata();
+        assertNull(itemMetadata.getMtime());
+
+        itemMetadata.setMtime(null);
+        assertNull(itemMetadata.getMtime());
+
+        Long mtime = 3243L;
+        itemMetadata.setMtime(mtime);
+        assertEquals(mtime, itemMetadata.getMtime());
+    }
+
+    @Test
     public void testCache() {
         Client client = Client.create(httpClient, SERVER_URL);
         Account etebase = Account.restore(client, storedSession, null);
