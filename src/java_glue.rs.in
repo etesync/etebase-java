@@ -641,6 +641,8 @@ mod FileSystemCacheFixes {
     }
 }
 
+type NullableString = Option<String>;
+
 foreign_class!(class FileSystemCache {
     self_type FileSystemCache;
     private constructor = empty;
@@ -653,10 +655,10 @@ foreign_class!(class FileSystemCache {
     fn FileSystemCache::load_account(&self, client: &Client, encryption_key: Option<&[u8]>) -> Result<Account>; alias accountLoad;
 
     fn FileSystemCache::save_stoken(&self, stoken: &str) -> Result<()>; alias saveStoken;
-    private fn FileSystemCache::load_stoken(&self) -> Result<Option<String>>; alias optLoadStoken;
+    fn FileSystemCache::load_stoken(&self) -> Result<NullableString>; alias loadStoken;
 
     fn FileSystemCache::collection_save_stoken(&self, col_uid: &str, stoken: &str) -> Result<()>; alias collectionSaveStoken;
-    private fn FileSystemCache::collection_load_stoken(&self, col_uid: &str) -> Result<Option<String>>; alias optCollectionLoadStoken;
+    fn FileSystemCache::collection_load_stoken(&self, col_uid: &str) -> Result<NullableString>; alias collectionLoadStoken;
     fn FileSystemCache::collection(&self, col_mgr: &CollectionManager, col_uid: &str) -> Result<Collection>; alias collectionGet;
     fn FileSystemCache::collection_set(&self, col_mgr: &CollectionManager, collection: &Collection) -> Result<()>; alias collectionSet;
     fn FileSystemCache::collection_set_with_content(&self, col_mgr: &CollectionManager, collection: &Collection) -> Result<()>; alias collectionSetWithContent;
@@ -670,13 +672,6 @@ foreign_class!(class FileSystemCache {
     fn FileSystemCacheFixes::_unstable_itemList(&self, item_mgr: &ItemManager, col_uid: &str) -> Result<Vec<Item>>;
 
     foreign_code r#"
-    public @Nullable String loadStoken() {
-        return do_optLoadStoken(mNativeObj);
-    }
-    public @Nullable String collectionLoadStoken(@NonNull String col_uid) {
-        return do_optCollectionLoadStoken(mNativeObj, col_uid);
-    }
-
     static {
         System.loadLibrary("etebase_android");
     }

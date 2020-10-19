@@ -92,6 +92,17 @@ foreign_typemap!(
 );
 
 foreign_typemap!(
+    ($p:r_type) NullableString => internal_aliases::JStringOptStr {
+        $out = match $p {
+            Some(s) => from_std_string_jstring(s, env),
+            None => ::std::ptr::null_mut(),
+        };
+    };
+    ($p:f_type, option = "NoNullAnnotations") => "@NonNull String";
+    ($p:f_type, option = "NullAnnotations") => "@Nullable String";
+);
+
+foreign_typemap!(
     ($p:r_type) CallbackOption<&str> => internal_aliases::JStringOptStr {
         $out = match $p {
             Some(s) => from_std_string_jstring(s.to_owned(), env),
