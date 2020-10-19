@@ -50,6 +50,47 @@ foreign_typemap!(
 "#;
 );
 
+#[allow(dead_code)]
+fn to_java_lang_null_long(env: *mut JNIEnv, x: Option<i64>) -> internal_aliases::JLong {
+    match x {
+        Some(val) => {
+            // Have to cache it as LONG2 because of issues with flapigen
+            let class: jclass = swig_jni_find_class!(JAVA_LANG_LONG2, "java/lang/Long");
+            assert!(!class.is_null(),);
+            let of_m: jmethodID = swig_jni_get_static_method_id!(
+                JAVA_LANG_LONG2_VALUE_OF,
+                JAVA_LANG_LONG2,
+                "valueOf",
+                "(J)Ljava/lang/Long;"
+            );
+            assert!(!of_m.is_null());
+
+            let ret = unsafe {
+                let ret = (**env).CallStaticObjectMethod.unwrap()(env, class, of_m, val);
+                if (**env).ExceptionCheck.unwrap()(env) != 0 {
+                    panic!("valueOf failed: catch exception");
+                }
+                ret
+            };
+
+            assert!(!ret.is_null());
+            ret
+        }
+        None => {
+            std::ptr::null_mut()
+        }
+    }
+}
+
+foreign_typemap!(
+    ($p:r_type) NullableI64 => internal_aliases::JLong {
+        $out = to_java_lang_null_long(env, $p);
+;
+    };
+    (f_type, option = "NoNullAnnotations") => "@NonNull Long";
+    (f_type, option = "NullAnnotations") => "@Nullable Long";
+);
+
 foreign_typemap!(
     ($p:r_type) CallbackOption<&str> => internal_aliases::JStringOptStr {
         $out = match $p {

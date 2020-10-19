@@ -232,6 +232,8 @@ foreign_class!(class FetchOptions {
 "#;
 });
 
+type NullableI64 = Option<i64>;
+
 mod ItemMetadataFixes {
     #![allow(non_snake_case)]
     use super::*;
@@ -246,6 +248,10 @@ mod ItemMetadataFixes {
 
     pub fn setMtime(md: &mut ItemMetadata, mtime: Option<i64>) {
         md.set_mtime(mtime);
+    }
+
+    pub fn getMtime(md: &mut ItemMetadata) -> NullableI64 {
+        md.mtime()
     }
 
     pub fn setDescription(md: &mut ItemMetadata, description: Option<&str>) {
@@ -267,16 +273,9 @@ foreign_class!(class ItemMetadata {
     fn ItemMetadataFixes::setColor(&mut self, color: Option<&str>);
     fn ItemMetadata::item_type(&self) -> Option<&str>; alias getItemType;
     fn ItemMetadata::name(&self) -> Option<&str>; alias getName;
-    private fn ItemMetadata::mtime(&self) -> Option<i64>; alias getMtimeOpt;
+    fn ItemMetadataFixes::getMtime(&mut self) -> NullableI64;
     fn ItemMetadata::description(&self) -> Option<&str>; alias getDescription;
     fn ItemMetadata::color(&self) -> Option<&str>; alias getColor;
-
-    foreign_code r#"
-    public @Nullable Long getMtime() {
-        java.util.OptionalLong mtime = getMtimeOpt();
-        return (mtime.isPresent()) ? mtime.getAsLong() : null;
-    }
-"#;
 });
 
 pub fn col_fetch(mgr: &CollectionManager, col_uid: &str, fetch_options: Option<&FetchOptions>) -> Result<Collection> {
