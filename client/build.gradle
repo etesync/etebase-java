@@ -23,14 +23,6 @@ android {
         multiDexEnabled true
     }
 
-    compileOptions {
-        // Flag to enable support for the new language APIs
-        coreLibraryDesugaringEnabled true
-        // Sets Java compatibility to Java 8
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-
 
     buildTypes {
         release {
@@ -46,8 +38,6 @@ dependencies {
 
     def okhttp3Version = "3.12.1"
     implementation "com.squareup.okhttp3:logging-interceptor:$okhttp3Version"
-
-    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.0.9'
 
     // Required -- JUnit 4 framework
     androidTestImplementation 'androidx.test:runner:1.1.0'
