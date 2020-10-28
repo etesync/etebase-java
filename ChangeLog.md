@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 2.3.1
+* Fix issue with custom urls lacking a trailing slash
+* Update etebase dependency
+
 ## Version 2.3.0
 * Fix crashes on Lineage for MicroG which was having issue with OptionalLong.
 * Remove usages of Optional throughout the lib (was never exposed in the API).
