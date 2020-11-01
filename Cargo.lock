@@ -171,7 +171,7 @@ checksum = "37ab347416e802de484e4d03c7316c48f1ecb56574dfd4a46a80f173ce1de04d"
 [[package]]
 name = "flapigen"
 version = "0.6.0-pre5"
-source = "git+https://github.com/tasn/flapigen-rs?rev=5ce81ec7454ee0e30363857612b3f2cbcc2afc79#5ce81ec7454ee0e30363857612b3f2cbcc2afc79"
+source = "git+https://github.com/tasn/flapigen-rs?rev=d2fbb9bd8ecb4ead986c295bffcfe889d9f47e8c#d2fbb9bd8ecb4ead986c295bffcfe889d9f47e8c"
 dependencies = [
  "bitflags",
  "heck",
