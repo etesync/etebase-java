@@ -1,5 +1,8 @@
 # Changelog
 
+## Version 2.3.2
+* Fix crash for Android devices older than Android 7 due to flapigen issue
+
 ## Version 2.3.1
 * Fix issue with custom urls lacking a trailing slash
 * Update etebase dependency
