@@ -77,8 +77,8 @@ afterEvaluate {
                     url = "https://www.etebase.com"
                     licenses {
                         license {
-                            name = "LGPL-3.0-only"
-                            url = "https://spdx.org/licenses/LGPL-3.0-only.html"
+                            name = "BSD-3-Clause"
+                            url = "https://spdx.org/licenses/BSD-3-Clause.html"
                         }
                     }
                     developers {
