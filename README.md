@@ -9,7 +9,7 @@ This package is implemented in Rust and exposes a Java API for people to use.
 
 [![Maven Central](https://img.shields.io/maven-central/v/com.etebase/client.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22com.etebase%22%20AND%20a:%22client%22)
 ![GitHub tag](https://img.shields.io/github/tag/etesync/etebase-java.svg)
-[![Chat on freenode](https://img.shields.io/badge/irc.freenode.net-%23EteSync-blue.svg)](https://webchat.freenode.net/?channels=#etesync)
+[![Chat on freenode](https://img.shields.io/badge/chat-IRC%20|%20Matrix%20|%20Web-blue.svg)](https://www.etebase.com/community-chat/)
 
 # Build
 
