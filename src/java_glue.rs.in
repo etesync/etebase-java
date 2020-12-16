@@ -399,6 +399,9 @@ foreign_class!(class ItemManager {
     fn item_batch(&self, items: Vec<&Item>, deps: Option<Vec<&Item>>, fetch_options: Option<&FetchOptions>) -> Result<()>; alias batch;
     fn item_transaction(&self, items: Vec<&Item>, deps: Option<Vec<&Item>>, fetch_options: Option<&FetchOptions>) -> Result<()>; alias transaction;
 
+    fn ItemManager::download_content(&self, item: &mut Item) -> Result<()>; alias downloadContent;
+    fn ItemManager::upload_content(&self, item: &Item) -> Result<()>; alias uploadContent;
+
     fn ItemManager::cache_load(&self, cached: &[u8]) -> Result<Item>; alias cacheLoad;
     fn ItemManager::cache_save(&self, item: &Item) -> Result<Vec<u8>>; alias cacheSave;
     fn ItemManager::cache_save_with_content(&self, item: &Item) -> Result<Vec<u8>>; alias cacheSaveWithContent;
@@ -500,6 +503,7 @@ foreign_class!(class Item {
     fn Item::content(&self) -> Result<Vec<u8>>; alias getContent;
     fn Item::delete(&mut self) -> Result<()>;
     fn Item::is_deleted(&self) -> bool; alias isDeleted;
+    fn Item::is_missing_content(&self) -> bool; alias isMissingContent;
     fn Item::uid(&self) -> &str; alias getUid;
     fn Item::etag(&self) -> &str; alias getEtag;
 
