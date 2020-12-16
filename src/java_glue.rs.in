@@ -133,6 +133,12 @@ foreign_class!(class Account {
     fn signup(client: &Client, user: &User, password: &str) -> Result<Account> {
         Account::signup(client.clone(), user, password)
     }
+    fn loginKey(client: &Client, username: &str, main_key: &[u8]) -> Result<Account> {
+        Account::login_key(client.clone(), username, main_key)
+    }
+    fn signupKey(client: &Client, user: &User, main_key: &[u8]) -> Result<Account> {
+        Account::signup_key(client.clone(), user, main_key)
+    }
     fn Account::fetch_token(&mut self) -> Result<()>; alias fetchToken;
     fn Account::force_server_url(&mut self, api_base: &str) -> Result<()>; alias forceServerUrl;
     fn Account::change_password(&mut self, password: &str) -> Result<()>; alias changePassword;
