@@ -11,6 +11,10 @@ This package is implemented in Rust and exposes a Java API for people to use.
 ![GitHub tag](https://img.shields.io/github/tag/etesync/etebase-java.svg)
 [![Chat on freenode](https://img.shields.io/badge/chat-IRC%20|%20Matrix%20|%20Web-blue.svg)](https://www.etebase.com/community-chat/)
 
+# Documentation
+
+In addition to the API documentation, there are docs available at https://docs.etebase.com
+
 # Build
 
 Make sure you have the Android NDK in your build path:
