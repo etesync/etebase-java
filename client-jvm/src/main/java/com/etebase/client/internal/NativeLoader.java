@@ -24,10 +24,19 @@ public final class NativeLoader {
             String override = System.getProperty(OVERRIDE_PROPERTY);
             if (override != null && !override.isEmpty()) {
                 System.load(override);
-            } else {
+            } else if (!loadFromLibraryPath()) {
                 loadFromClasspath();
             }
             loaded = true;
+        }
+    }
+
+    private static boolean loadFromLibraryPath() {
+        try {
+            System.loadLibrary(LIB_NAME);
+            return true;
+        } catch (UnsatisfiedLinkError ignored) {
+            return false;
         }
     }
 

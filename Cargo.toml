@@ -28,3 +28,6 @@ etebase = { git = "https://github.com/etesync/etebase-rs", rev = "ff14aadd7d5bde
 default = ["android"]
 android = ["android_logger", "log-panics"]
 jvm = []
+
+[patch.crates-io]
+remove_dir_all = { path = "patches/remove_dir_all" }

@@ -2,17 +2,30 @@ name: Build
 
 on:
   push:
-    branches: ['**']
+    branches: [master]
     tags: ['v*']
+    paths-ignore: &paths-ignore
+      - '**.md'
+      - LICENSE
+      - .gitignore
+      - .github/FUNDING.yml
   pull_request:
+    paths-ignore: *paths-ignore
   workflow_dispatch:
+    inputs:
+      version:
+        description: 'Publish this version to Maven Central (X.Y.Z, X.Y.Z-betaNN or X.Y.Z-SNAPSHOT, leave empty to only build)'
+        required: false
+
+permissions:
+  contents: read
 
 jobs:
   # ---------- Native builds ----------
 
   android-native:
     name: android/${{ matrix.abi }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
       matrix:
@@ -30,19 +43,27 @@ jobs:
             target: x86_64-linux-android
             cc: x86_64-linux-android21-clang
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
 
-      - uses: actions-rust-lang/setup-rust-toolchain@v1
+      - uses: actions-rust-lang/setup-rust-toolchain@166cdcfd11aee3cb47222f9ddb555ce30ddb9659 # v1.17.0
         with:
           target: ${{ matrix.target }}
           cache-key: android-${{ matrix.target }}
           rustflags: ""
+          cache: ${{ !startsWith(github.ref, 'refs/tags/') }}
 
       - name: Install pinned Android NDK
         run: echo y | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "ndk;21.3.6528147"
 
       - name: Put NDK toolchain on PATH
         run: echo "$ANDROID_HOME/ndk/21.3.6528147/toolchains/llvm/prebuilt/linux-x86_64/bin" >> $GITHUB_PATH
+
+      - name: Build libsodium
+        env:
+          CC: ${{ matrix.cc }}
+        run: |
+          dir=$(./build-libsodium.sh ${{ matrix.target }})
+          echo "SODIUM_LIB_DIR=$dir" >> $GITHUB_ENV
 
       - name: Build
         env:
@@ -52,11 +73,14 @@ jobs:
           export "CARGO_TARGET_${triple_upper}_LINKER=${{ matrix.cc }}"
           mkdir -p "$RUNNER_TEMP/libunwind-stub"
           printf '!<arch>\n' > "$RUNNER_TEMP/libunwind-stub/libunwind.a"
-          export RUSTFLAGS="-L $RUNNER_TEMP/libunwind-stub -C link-arg=-Wl,-z,max-page-size=16384"
-          cargo build --target ${{ matrix.target }} --release
+          export RUSTFLAGS="-L $RUNNER_TEMP/libunwind-stub -C link-arg=-Wl,-z,max-page-size=16384 -C link-arg=-Wl,-z,common-page-size=16384"
+          cargo build --locked --target ${{ matrix.target }} --release
+
+      - name: Check 16 KB alignment
+        run: python3 check-elf-alignment.py target/${{ matrix.target }}/release/libetebase_jni.so
 
       - name: Upload native lib
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: android-${{ matrix.abi }}
           path: target/${{ matrix.target }}/release/libetebase_jni.so
@@ -64,7 +88,7 @@ jobs:
 
       - name: Upload generated Java (once)
         if: matrix.abi == 'arm64-v8a'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: android-generated-java
           path: client/src/main/java/com/etebase/client/*.java
@@ -77,11 +101,11 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - runner: macos-latest
+          - runner: macos-26
             subdir: macos-aarch64
             target: aarch64-apple-darwin
             libfile: libetebase_jni.dylib
-          - runner: macos-latest
+          - runner: macos-26
             subdir: macos-x86_64
             target: x86_64-apple-darwin
             libfile: libetebase_jni.dylib
@@ -93,25 +117,36 @@ jobs:
             subdir: linux-aarch64
             target: aarch64-unknown-linux-gnu
             libfile: libetebase_jni.so
-          - runner: windows-latest
+          - runner: windows-2025
             subdir: windows-x86_64
             target: x86_64-pc-windows-msvc
             libfile: etebase_jni.dll
+          - runner: windows-11-arm
+            subdir: windows-aarch64
+            target: aarch64-pc-windows-msvc
+            libfile: etebase_jni.dll
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
 
-      - uses: actions-rust-lang/setup-rust-toolchain@v1
+      - uses: actions-rust-lang/setup-rust-toolchain@166cdcfd11aee3cb47222f9ddb555ce30ddb9659 # v1.17.0
         with:
           target: ${{ matrix.target }}
           cache-key: desktop-${{ matrix.target }}
           rustflags: ""
+          cache: ${{ !startsWith(github.ref, 'refs/tags/') }}
+
+      - name: Build libsodium
+        shell: bash
+        run: |
+          dir=$(./build-libsodium.sh ${{ matrix.target }})
+          echo "SODIUM_LIB_DIR=$dir" >> $GITHUB_ENV
 
       - name: Build
         shell: bash
-        run: cargo build --target ${{ matrix.target }} --release --no-default-features --features jvm
+        run: cargo build --locked --target ${{ matrix.target }} --release --no-default-features --features jvm
 
       - name: Upload native lib
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: desktop-${{ matrix.subdir }}
           path: target/${{ matrix.target }}/release/${{ matrix.libfile }}
@@ -119,87 +154,119 @@ jobs:
 
       - name: Upload generated Java (once)
         if: matrix.subdir == 'linux-x86_64'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: desktop-generated-java
           path: client-jvm/src/main/java/com/etebase/client/*.java
           if-no-files-found: error
 
+  audit:
+    name: Audit dependencies
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+
+      - name: Install cargo-audit
+        run: |
+          curl -fsSL --retry 5 -o "$RUNNER_TEMP/cargo-audit.tgz" https://github.com/rustsec/rustsec/releases/download/cargo-audit/v0.22.2/cargo-audit-x86_64-unknown-linux-gnu-v0.22.2.tgz
+          echo "ab28a1bdb54db4d5d8ad5981cf1f959410370b3d28250dbd35f6a44248620e39  $RUNNER_TEMP/cargo-audit.tgz" | sha256sum -c
+          tar -xzf "$RUNNER_TEMP/cargo-audit.tgz" -C "$RUNNER_TEMP" --strip-components=1
+          echo "$RUNNER_TEMP" >> $GITHUB_PATH
+
+      - name: Audit
+        run: cargo-audit audit --file Cargo.lock
+
   # ---------- Assembly ----------
 
-  assemble-android:
-    name: Assemble AAR
-    needs: android-native
-    runs-on: ubuntu-latest
+  assemble:
+    name: Assemble
+    needs: [android-native, desktop-native]
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
 
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@cf277c60eb25467037889841efdb72551f06f6c3 # v4.9.1
         with:
           distribution: temurin
-          java-version: '11'
+          java-version: '21'
+
+      - uses: gradle/actions/setup-gradle@748248ddd2a24f49513d8f472f81c3a07d4d50e1 # v4.4.4
 
       - name: Install pinned Android NDK
         run: echo y | JAVA_HOME="$JAVA_HOME_17_X64" $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "ndk;21.3.6528147"
 
       - name: Download native libs
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
         with:
-          pattern: android-*
           path: artifacts/
 
-      - name: Stage jniLibs and generated Java
-        run: |
-          for abi in armeabi-v7a arm64-v8a x86 x86_64; do
-            mkdir -p client/src/main/jniLibs/$abi
-            cp artifacts/android-$abi/libetebase_jni.so client/src/main/jniLibs/$abi/
-          done
-          mkdir -p client/src/main/java/com/etebase/client
-          cp artifacts/android-generated-java/*.java client/src/main/java/com/etebase/client/
+      - name: Stage native libs and generated Java
+        run: ./stage-natives.sh artifacts
 
-      - name: Assemble AAR
-        run: ./gradlew :client:assembleRelease --no-daemon
+      - name: Assemble
+        run: ./gradlew :client:assembleRelease :client-jvm:assemble
 
       - name: Upload AAR
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: etebase-client-aar
           path: client/build/outputs/aar/*.aar
           if-no-files-found: error
 
-  assemble-jvm:
-    name: Assemble JAR
-    needs: desktop-native
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: '11'
-
-      - name: Download native libs
-        uses: actions/download-artifact@v4
-        with:
-          pattern: desktop-*
-          path: artifacts/
-
-      - name: Stage native libs and generated Java
-        run: |
-          for subdir in macos-aarch64 macos-x86_64 linux-x86_64 linux-aarch64 windows-x86_64; do
-            mkdir -p client-jvm/src/main/resources/com/etebase/client/native/$subdir
-            cp artifacts/desktop-$subdir/* client-jvm/src/main/resources/com/etebase/client/native/$subdir/
-          done
-          mkdir -p client-jvm/src/main/java/com/etebase/client
-          cp artifacts/desktop-generated-java/*.java client-jvm/src/main/java/com/etebase/client/
-
-      - name: Assemble JAR
-        run: ./gradlew :client-jvm:assemble --no-daemon
-
       - name: Upload JAR
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: etebase-client-jvm-jar
           path: client-jvm/build/libs/*.jar
           if-no-files-found: error
+
+  publish:
+    name: Publish to Maven Central
+    if: startsWith(github.ref, 'refs/tags/v') || inputs.version
+    needs: [assemble, audit]
+    runs-on: ubuntu-24.04
+    environment: Release
+    permissions:
+      contents: read
+      id-token: write
+      attestations: write
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-java@cf277c60eb25467037889841efdb72551f06f6c3 # v4.9.1
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Install pinned Android NDK
+        run: echo y | JAVA_HOME="$JAVA_HOME_17_X64" $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "ndk;21.3.6528147"
+
+      - name: Download native libs
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          pattern: '{android,desktop}-*'
+          path: artifacts/
+
+      - name: Stage native libs and generated Java
+        run: ./stage-natives.sh artifacts
+
+      - name: Publish
+        run: ETEBASE_VERSION="${VERSION#v}" ./gradlew publishToMavenCentral --no-configuration-cache
+        env:
+          VERSION: ${{ inputs.version || github.ref_name }}
+          ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+          ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
+          ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.SIGNING_KEY }}
+          ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.SIGNING_KEY_PASSWORD }}
+
+      - name: Attest build provenance
+        uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4.2.2
+        with:
+          subject-path: |
+            client/build/outputs/aar/*.aar
+            client-jvm/build/libs/*.jar
+            artifacts/*/*.so
+            artifacts/*/*.dylib
+            artifacts/*/*.dll

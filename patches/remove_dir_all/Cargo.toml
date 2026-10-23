@@ -1,0 +1,9 @@
+[package]
+name = "remove_dir_all"
+version = "0.6.1"
+edition = "2018"
+license = "BSD-3-Clause"
+publish = false
+
+[lib]
+path = "src/lib.rs"

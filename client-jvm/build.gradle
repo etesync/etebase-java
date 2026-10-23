@@ -1,6 +1,11 @@
-apply plugin: 'java-library'
-apply plugin: 'maven-publish'
-apply plugin: 'signing'
+import com.vanniktech.maven.publish.JavaLibrary
+import com.vanniktech.maven.publish.JavadocJar
+import com.vanniktech.maven.publish.SourcesJar
+
+plugins {
+    id 'java-library'
+    id 'com.vanniktech.maven.publish'
+}
 
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
@@ -23,10 +28,6 @@ sourceSets {
     }
 }
 
-repositories {
-    mavenCentral()
-}
-
 dependencies {
     def okhttp3Version = "3.12.1"
     api "com.squareup.okhttp3:logging-interceptor:$okhttp3Version"
@@ -34,66 +35,12 @@ dependencies {
     testImplementation 'junit:junit:4.12'
 }
 
-task javadocsJar(type: Jar, dependsOn: javadoc) {
-    archiveClassifier.set('javadoc')
-    from javadoc.destinationDir
-}
+mavenPublishing {
+    configure(new JavaLibrary(new JavadocJar.Javadoc(), new SourcesJar.Sources()))
+    coordinates(group.toString(), "client-jvm", version.toString())
 
-task sourcesJar(type: Jar) {
-    archiveClassifier.set('sources')
-    from sourceSets.main.allSource
-}
-
-publishing {
-    publications {
-        release(MavenPublication) {
-            from components.java
-
-            artifact javadocsJar
-            artifact sourcesJar
-
-            pom {
-                name = "Etebase JVM"
-                description = "Etebase API client for desktop JVM (Compose Multiplatform, server, CLI)"
-                url = "https://www.etebase.com"
-                licenses {
-                    license {
-                        name = "BSD-3-Clause"
-                        url = "https://spdx.org/licenses/BSD-3-Clause.html"
-                    }
-                }
-                developers {
-                    developer {
-                        id = "tasn"
-                        name = "Tom Hacohen"
-                        email = "maven@stosb.com"
-                    }
-                }
-                scm {
-                    connection = "scm:git:git://github.com/etesync/etebase-java.git"
-                    developerConnection = "scm:git:ssh://github.com/etesync/etebase-java"
-                    url = "https://github.com/etesync/etebase-java"
-                }
-            }
-        }
-    }
-
-    repositories {
-        maven {
-            def releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
-            def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots/"
-            url = isSnapshot ? snapshotsRepoUrl : releasesRepoUrl
-            credentials {
-                username = project.findProperty('ossrhUsername') ?: ''
-                password = project.findProperty('ossrhPassword') ?: ''
-            }
-        }
-    }
-}
-
-if (!isSnapshot) {
-    signing {
-        useGpgCmd()
-        sign publishing.publications.release
+    pom {
+        name = "Etebase JVM"
+        description = "Etebase API client for desktop JVM (Compose Multiplatform, server, CLI)"
     }
 }

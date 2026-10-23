@@ -1,27 +1,49 @@
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
-buildscript {
-    repositories {
-        google()
-        mavenCentral()
-    }
-    dependencies {
-        classpath "com.android.tools.build:gradle:4.0.0"
+plugins {
+    id 'com.android.library' version '9.4.1' apply false
+    id 'com.vanniktech.maven.publish' version '0.37.0' apply false
+}
 
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
-    }
+def releaseVersion = System.getenv("ETEBASE_VERSION")
+if (releaseVersion != null && !(releaseVersion ==~ /\d+\.\d+\.\d+(-beta\d{2}|-SNAPSHOT)?/)) {
+    throw new GradleException("ETEBASE_VERSION must be X.Y.Z, X.Y.Z-betaNN or X.Y.Z-SNAPSHOT, not \"$releaseVersion\"")
 }
 
 allprojects {
-    repositories {
-        google()
-        mavenCentral()
-    }
     group = "com.etebase"
-    version = "2.3.2"
-    ext.isSnapshot = version.endsWith("SNAPSHOT")
+    version = releaseVersion ?: "SNAPSHOT"
 }
 
-task clean(type: Delete) {
-    delete rootProject.buildDir
+subprojects {
+    pluginManager.withPlugin('com.vanniktech.maven.publish') {
+        mavenPublishing {
+            publishToMavenCentral(true)
+            signAllPublications()
+
+            pom {
+                url = "https://www.etebase.com"
+                licenses {
+                    license {
+                        name = "BSD-3-Clause"
+                        url = "https://spdx.org/licenses/BSD-3-Clause.html"
+                    }
+                }
+                developers {
+                    developer {
+                        id = "tasn"
+                        name = "Tom Hacohen"
+                        email = "maven@stosb.com"
+                    }
+                }
+                scm {
+                    url = "https://github.com/etesync/etebase-java"
+                    connection = "scm:git:https://github.com/etesync/etebase-java.git"
+                    developerConnection = "scm:git:git@github.com:etesync/etebase-java.git"
+                }
+            }
+        }
+    }
+}
+
+tasks.register('clean', Delete) {
+    delete rootProject.layout.buildDirectory
 }
